@@ -5,18 +5,34 @@
 # source https://www.bashsupport.com/manual/inspections/
 source ../cryn/scripts/styling.sh
 
+# if anything fails -> exit
+set -eou pipefail
+
+# for checking if the user will have the programs like gh cli, jq etc
+check_program() {
+  if ! command -v "$1" > /dev/null 2>&1; then
+    echo "${red}Looks like you don't have $1 (⌣́_⌣̀)${reset}"
+    echo "Install $1 and come back."
+    exit 1
+  fi
+}
+
+check_program "gh"
+check_program "npm"
+check_program "jq"
+check_program "gh"
+
+# for installing packages with npm
 install_package() {
   local package="$1"
   local flags="${2:-}"
   
   echo "$package..."
-  if ! npm i "$package" $flags > /dev/null 2>&1; then
+  if ! npm i "$package" "$flags" > /dev/null 2>&1; then
     echo "${bold}${red}Failed to install $package T.T${reset}"
     exit 1
   fi
 }
-# if anything fails -> exit
-set -eou pipefail
 
 echo "You are actually a lazy chud. What's the magic word? ( ﾟヮﾟ)"
 read -r word
@@ -30,7 +46,7 @@ do
     capitalized_input="${word^}"
 done
 echo
-echo "Fine (ㆆ _ ㆆ), I'll configure your project directory for you..."
+echo "Fine (ㆆ_ㆆ), I'll configure your project directory for you..."
 echo
 echo "Stealing template from Dave. Poor Dave."
 echo "${italic}Stole template.${reset}"
@@ -41,20 +57,26 @@ echo "${bold}${red}(alphanumeric + hyphens, underscores, and periods are allowed
 read -r repo_name
 echo
 if [[ $repo_name =~ ^[a-zA-Z0-9._-]+$ ]]; then
-    gh repo create "$repo_name" -p DaveRRC/BED-template -c --private
+    echo "Trying to make repository with '${repo_name}'..."
+    if gh repo create "$repo_name" -p DaveRRC/BED-template -c --private; then
+        echo "Sigh... (⌣́_⌣̀) I guess I'm creating the repo named: ${repo_name} "
+        echo
+        echo "Repo created (could've been more creative though)."
+        echo "Also cloned repository locally (this is why i'm the goat)."
+        echo
+        echo "Moving our cwd to the cloned repo (thank me later ^.^)."
+        cd "${repo_name}" || exit
+        echo
+    else
+        echo "${red}Failed to create the GitHub repository '${repo_name}'.${reset}"
+        echo "${red}Common issues:${reset} authentication problems (did you forget to log in?), the repository already exists (I knew that name was bad), or network connectivity errors (I heard ethernet is good)."
+        echo "Figure out what went wrong and then run the script again ( ━☞◔‿ゝ◔)━☞"
+        exit 1
+    fi
 else
     echo "${red}I'm pretty lenient when it comes to names but lets stay within the means here (ㆆ_ㆆ)... run the script again T.T${reset}"
     exit
 fi
-echo "Sigh... (⌣́_⌣̀) I guess I'm creating the repo named: ${repo_name} "
-
-echo
-echo "Repo created (could've been more creative though)."
-echo "Also cloned repository locally (this is why i'm the goat)."
-echo
-echo "Moving our cwd to the cloned repo (thank me later ^.^)."
-cd "${repo_name}" || exit
-echo
 
 # start node environment
 echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
