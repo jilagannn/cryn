@@ -1,31 +1,7 @@
 #!/bin/bash
 
-reset=$'\e[0m'
+source ./scripts/styling.sh
 
-# text styling
-bold=$'\e[1m'
-italic=$'\e[3m'
-underline=$'\e[4m'
-reverse=$'\e[7m'
-
-# text colors
-red=$'\e[31m'
-green=$'\e[38;5;42m'
-orange=$'\e[38;2;240;143;104m'
-black=$'\e[30m'
-green_v2=$'\e[32m'
-yellow=$'\e[33m'
-blue=$'\e[34m'
-magenta=$'\e[35m'
-cyan=$'\e[36m'
-
-# bg text colors
-cyan_bg=$'\e[46m'
-bright_cyan_bg=$'\e[106m'
-bright_green_bg=$'\e[48;5;42m'
-orange_bg=$'\e[48;2;240;143;104m'
-
-echo "${bold}${reverse}${yellow}test text${reset}"
 # if anything fails -> exit
 set -eou pipefail
 
