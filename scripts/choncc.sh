@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./scripts/styling.sh
+# shellcheck source=styling.sh
 # source https://www.bashsupport.com/manual/inspections/
 source ./scripts/styling.sh
 
