@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# if anything fails -> exit
+set -eou pipefail
+
 echo "You are actually a lazy chud. Whats the magic word? ( ﾟヮﾟ)"
 read -r word
 capitalized_input="${word^}"
