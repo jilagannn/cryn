@@ -26,8 +26,7 @@ check_program "gh"
 install_package() {
   local package="$1"
   local flags="${2:-}"
-  
-  echo "$package..."
+
   if ! npm i "$package" "$flags" > /dev/null 2>&1; then
     echo "${bold}${red}Failed to install $package T.T${reset}"
     exit 1
@@ -81,65 +80,56 @@ fi
 # start node environment
 echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
 npm init -y > /dev/null 2>&1
-echo
 echo "${reverse}Node initialized.${reset}"
 echo 
 sleep 1
 
 # express in build and in development dependencies
-echo "${bold}${reverse}Installing Express for you (goated docs btw) (っ◕‿◕)っ.${reset}"
+echo "${italic}${underline}Installing build and dev dependencies.${reset}"
+echo "${reverse}${bold}Express (goated docs btw) (っ◕‿◕)っ.${reset}"
 install_package "express"
 install_package "@types/express" --save-dev 
-echo
-echo "${reverse}Express acquired (っ◕‿◕)っ.${reset}"
-echo
 sleep 1
 
 # typescript in development dependencies
-echo "${bold}${reverse}${green}Installing TypeScript, the mother of all Types (⚆ _ ⚆).${reset}"
+echo "${bold}${reverse}${green}TypeScript, the mother of all Types (⚆ _ ⚆).${reset}"
 install_package "typescript" --save-dev
 install_package "ts-node" --save-dev
 install_package "@types/node" --save-dev
-echo
-echo "${reverse}TypeScript has been installed \(•◡•)/${reset}"
-echo
 sleep 1
 
 # jest in development dependencies
-echo "${bold}${reverse}${red}Installing pain erm I mean Jest...╥﹏╥${reset}"
-echo
+echo "${bold}${reverse}${red}Pain... erm I mean Jest... ╥﹏╥${reset}"
 install_package "jest" --save-dev
 install_package "ts-jest" --save-dev
 install_package "@types/jest" --save-dev
-echo
-echo "Well that took long. Nothingburger wait times."
-echo "${reverse}Anyways, Jest installed......╥﹏╥${reset}"
-echo
-sleep 3
+sleep 1
 
 # supertest in development dependencies
-echo "${bold}${reverse}${yellow}Installing SuperTest ƪ(˘⌣˘)ʃ${reset}"
+echo "${bold}${reverse}${yellow}SuperTest ƪ(˘⌣˘)ʃ${reset}"
 install_package "supertest" --save-dev
 install_package "@types/supertest" --save-dev
-echo
-echo "Superman has arrived ƪ(˘⌣˘)ʃ."
-echo
+# echo
+# echo "Superman has arrived ƪ(˘⌣˘)ʃ."
+# echo
 sleep 1
 
 # morgan
-echo "${bold}${reverse}${green}Installing Morgan(a) ⇒${reset}"
+echo "${bold}${reverse}${green}Morgan '(ᗒᗣᗕ)՞${reset}"
 install_package "morgan"
 install_package "@types/morgan" --save-dev
-echo
-echo "Morgan(a) installed - LEAGUE MENTIONED '(ᗒᗣᗕ)՞."
-echo 
+# echo
+# echo "Morgan(a) installed - LEAGUE MENTIONED ."
+# echo 
 sleep 1
+echo
+echo "Build and dev dependencies installed O=('-'Q)"
+echo
 
 # jest configuration
-echo "Oh yah, configuring jest.config because you don't want to -.-"
-echo "Please wait, it's the best you could do :c"
+echo "Oh yah, the config files because you don't want to T.T"
+echo "Please wait, it's the best you could do -.-"
 sleep 2
-echo
 cat > jest.config.js << EOF
 module.exports = {
     preset: "ts-jest",
@@ -153,13 +143,8 @@ module.exports = {
 };
 EOF
 echo "${italic}${reverse}jest.config.js configured in '/'${reset}"
-echo
-echo "${bold}${italic}You're welcome, (¬‿¬) you're welcome.${reset}"
-sleep 2
-echo
 
 # update package.json for the scripts and jest testing
-echo "Updating package.json ⇒"
 sleep 2
 jq '
 .scripts["test:watch"] = "jest --watch" |
@@ -169,23 +154,21 @@ jq '
 .scripts.start = "ts-node src/server.ts" |
 .directories.test = "test"
 ' package.json > placeholder.json && mv placeholder.json package.json 
-echo
 echo "${italic}${reverse}package.json configured in '/'${reset}"
 sleep 2
+echo "${bold}${italic}I configured them for you - (¬‿¬) you're welcome.${reset}"
 
 # make project directory
 echo
-echo "Creating API structure ⇒"
+echo "Creating API project directory ⇒"
 mkdir -p test/ src/api/v1
 sleep 2
-echo "${italic}${reverse}API structure created.${reset}"
-echo
-echo "Creating base files ⇒"
+echo "${italic}${reverse}API structure created => 'src/api/v1', 'test/'${reset}"
 sleep 2
 touch src/app.ts src/server.ts
 echo "${italic}${reverse}Base files created => 'src/app.ts', 'src/server.ts'${reset}"
 echo
-echo "Creating basic express app ⇒"
+echo "Creating base Express API ⇒"
 cat > src/app.ts << 'EOF'
 import express, { Express } from "express";
 import morgan from "morgan";
@@ -205,8 +188,6 @@ export default app;
 EOF
 sleep 1
 echo "${italic}${reverse}Basic express app created for 'src/app.ts'${reset}"
-echo
-echo "Creating server component"
 cat > src/server.ts << 'EOF'
 import app from "./app";
 import { Server } from "http";
