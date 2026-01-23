@@ -149,7 +149,32 @@ jq '
 .directories.test = "test"
 ' package.json > placeholder.json && mv placeholder.json package.json 
 echo "${italic}${reverse}package.json configured in '/'${reset}"
+
 sleep 2
+cat > .github/workflows/ci.yml << EOF
+name: Node.js CI
+
+on:
+    push:
+        branches: [main, development]
+    pull_request:
+        branches: [main, development]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: "20.x"
+            - run: npm install
+            - run: npm test
+EOF
+echo "${italic}${reverse}ci.yml configured in '/.github/workflows'${reset}"
+echo
 echo "${bold}${italic}I configured them for you - (¬‿¬) you're welcome.${reset}"
 
 # make project directory
