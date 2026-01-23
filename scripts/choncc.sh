@@ -25,3 +25,65 @@ gh repo create "$repo_name" -p DaveRRC/BED-template -c --private
 echo
 echo "Repo created (could've been more creative though)."
 echo "Also cloned repository locally (this is why i'm the goat)."
+echo
+sleep 2
+echo "Moving our cwd to the cloned repo (thank me later ^.^)."
+cd "${repo_name}" || exit
+echo
+sleep 2
+
+# start node environment
+echo "Alright, starting Node.js"
+sleep 1
+npm init -y > /dev/null
+echo
+echo "Node initialized."
+echo 
+sleep 3
+
+# express in build and in development dependencies
+echo "Installing Express for you (goated docs btw)."
+npm i express
+npm i @types/express --save-dev
+echo
+sleep 2
+echo "Express acquired."
+echo
+sleep 3
+
+# typescript in development dependencies
+echo "Installing TypeScript, the mother of all Types."
+npm i typescript ts-node @types/node --save-dev
+echo
+sleep 2
+echo "TypeScript has been installed."
+echo
+sleep 3
+
+# jest in development dependencies
+echo "Installing pain I mean Jest."
+echo
+npm i jest ts-jest @types/jest --save-dev
+echo
+sleep 2
+echo "Well that took long. Ignore those errors, nothingburger. Anyways, Jest installed......"
+echo
+sleep 6
+
+# supertest in development dependencies
+echo "Installing SuperTest 🦸🏻‍♀️"
+npm i supertest @types/supertest --save-dev
+echo
+sleep 2
+echo "Superman has arrived."
+echo
+sleep 2
+
+# morgan
+echo "Installing Morgan(a)."
+npm i morgan 
+npm i @types/morgan --save-dev
+echo
+echo "Morgan(a) installed - LEAGUE MENTIONED."
+echo 
+sleep 2
