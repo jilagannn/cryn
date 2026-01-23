@@ -2,21 +2,30 @@
 
 # shellcheck disable=SC1091
 # shellcheck disable=SC2154
-# shellcheck source=scripts/styling.sh
 # source https://www.bashsupport.com/manual/inspections/
-source ./scripts/styling.sh
+source ../cryn/scripts/styling.sh
 
+install_package() {
+  local package="$1"
+  local flags="${2:-}"
+  
+  echo "$package..."
+  if ! npm i "$package" $flags > /dev/null 2>&1; then
+    echo "${bold}${red}Failed to install $package T.T${reset}"
+    exit 1
+  fi
+}
 # if anything fails -> exit
 set -eou pipefail
 
-echo "You are actually a lazy chud. Whats the magic word? ( ﾟヮﾟ)"
+echo "You are actually a lazy chud. What's the magic word? ( ﾟヮﾟ)"
 read -r word
 capitalized_input="${word^}"
 
 while [ "$capitalized_input" != "Please" ]
 do 
     clear
-	echo "Guess you actually have to work. I don't think we want to stay here forever waiting for a simple word... ( ﾟヮﾟ)"
+    echo "Guess you actually have to work. I don't think we want to stay here forever waiting for a simple word... ( ﾟヮﾟ)"
     read -r word
     capitalized_input="${word^}"
 done
@@ -28,13 +37,13 @@ echo "${italic}Stole template.${reset}"
 echo
 
 echo "Name the repo please: "
-echo "${bold}${red}(alphanumeric + hypens, underscores, and periods are allowed)${reset}"
+echo "${bold}${red}(alphanumeric + hyphens, underscores, and periods are allowed)${reset}"
 read -r repo_name
 echo
 if [[ $repo_name =~ ^[a-zA-Z0-9._-]+$ ]]; then
     gh repo create "$repo_name" -p DaveRRC/BED-template -c --private
 else
-    echo "${red}Im pretty lenient when it comes to names but lets stay within the means here (ㆆ_ㆆ)... run the script again T.T${reset}"
+    echo "${red}I'm pretty lenient when it comes to names but lets stay within the means here (ㆆ_ㆆ)... run the script again T.T${reset}"
     exit
 fi
 echo "Sigh... (⌣́_⌣̀) I guess I'm creating the repo named: ${repo_name} "
@@ -48,8 +57,8 @@ cd "${repo_name}" || exit
 echo
 
 # start node environment
-echo "${bold}${reverse}${green_v2}Alright, starting Node.js ⇒${reset}"
-npm init -y > /dev/null
+echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
+npm init -y > /dev/null 2>&1
 echo
 echo "${reverse}Node initialized.${reset}"
 echo 
@@ -57,8 +66,8 @@ sleep 1
 
 # express in build and in development dependencies
 echo "${bold}${reverse}Installing Express for you (goated docs btw) (っ◕‿◕)っ.${reset}"
-npm i express
-npm i @types/express --save-dev
+install_package "express"
+install_package "@types/express" --save-dev 
 echo
 echo "${reverse}Express acquired (っ◕‿◕)っ.${reset}"
 echo
@@ -66,7 +75,9 @@ sleep 1
 
 # typescript in development dependencies
 echo "${bold}${reverse}${green}Installing TypeScript, the mother of all Types (⚆ _ ⚆).${reset}"
-npm i typescript ts-node @types/node --save-dev
+install_package "typescript" --save-dev
+install_package "ts-node" --save-dev
+install_package "@types/node" --save-dev
 echo
 echo "${reverse}TypeScript has been installed \(•◡•)/${reset}"
 echo
@@ -75,16 +86,19 @@ sleep 1
 # jest in development dependencies
 echo "${bold}${reverse}${red}Installing pain erm I mean Jest...╥﹏╥${reset}"
 echo
-npm i jest ts-jest @types/jest --save-dev
+install_package "jest" --save-dev
+install_package "ts-jest" --save-dev
+install_package "@types/jest" --save-dev
 echo
-echo "Well that took long. Ignore those errors, nothingburger."
+echo "Well that took long. Nothingburger wait times."
 echo "${reverse}Anyways, Jest installed......╥﹏╥${reset}"
 echo
 sleep 3
 
 # supertest in development dependencies
 echo "${bold}${reverse}${yellow}Installing SuperTest ƪ(˘⌣˘)ʃ${reset}"
-npm i supertest @types/supertest --save-dev
+install_package "supertest" --save-dev
+install_package "@types/supertest" --save-dev
 echo
 echo "Superman has arrived ƪ(˘⌣˘)ʃ."
 echo
@@ -92,8 +106,8 @@ sleep 1
 
 # morgan
 echo "${bold}${reverse}${green}Installing Morgan(a) ⇒${reset}"
-npm i morgan 
-npm i @types/morgan --save-dev
+install_package "morgan"
+install_package "@types/morgan" --save-dev
 echo
 echo "Morgan(a) installed - LEAGUE MENTIONED '(ᗒᗣᗕ)՞."
 echo 
@@ -147,14 +161,18 @@ echo
 echo "Creating base files ⇒"
 sleep 2
 touch src/app.ts src/server.ts
-echo "${italic}${reverse}Base files created => 'src/app.ts', 'src/server.ts${reset}"
+echo "${italic}${reverse}Base files created => 'src/app.ts', 'src/server.ts'${reset}"
 echo
 echo "Creating basic express app ⇒"
 cat > src/app.ts << 'EOF'
 import express, { Express } from "express";
+import morgan from "morgan";
 
 // Initialize Express application
 const app: Express = express();
+
+// Setup Morgan
+app.use(morgan("combined"));
 
 // Define a route
 app.get("/", (req, res) => {
@@ -184,8 +202,8 @@ echo "${italic}${reverse}Server component created on 'src/server.ts'${reset}"
 echo
 echo
 echo "API Structure:"
-ls -lR
+ls -lR -I node_modules
 echo
 echo
 echo "Until next time chud (¬_¬)"
-echo "Total runtime ⇒ $SECONDS seconds"
+echo "Total runtime -> $SECONDS seconds"
