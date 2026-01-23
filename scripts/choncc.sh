@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck source=./scripts/styling.sh
+# source https://www.bashsupport.com/manual/inspections/
 source ./scripts/styling.sh
 
 # if anything fails -> exit
