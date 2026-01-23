@@ -1,5 +1,31 @@
 #!/bin/bash
 
+reset=$'\e[0m'
+
+# text styling
+bold=$'\e[1m'
+italic=$'\e[3m'
+underline=$'\e[4m'
+reverse=$'\e[7m'
+
+# text colors
+red=$'\e[31m'
+green=$'\e[38;5;42m'
+orange=$'\e[38;2;240;143;104m'
+black=$'\e[30m'
+green_v2=$'\e[32m'
+yellow=$'\e[33m'
+blue=$'\e[34m'
+magenta=$'\e[35m'
+cyan=$'\e[36m'
+
+# bg text colors
+cyan_bg=$'\e[46m'
+bright_cyan_bg=$'\e[106m'
+bright_green_bg=$'\e[48;5;42m'
+orange_bg=$'\e[48;2;240;143;104m'
+
+echo "${bold}${reverse}${yellow}test text${reset}"
 # if anything fails -> exit
 set -eou pipefail
 
@@ -18,13 +44,21 @@ echo
 echo "Fine (ㆆ _ ㆆ), I'll configure your project directory for you..."
 echo
 echo "Stealing template from Dave. Poor Dave."
-echo "Stole template."
+echo "${italic}Stole template.${reset}"
 echo
 
-read -r -p "Name the repo please: " repo_name
-echo "Sigh... (⌣́_⌣̀) I guess I'm creating the repo named: ${repo_name} "
+echo "Name the repo please: "
+echo "${bold}${red}(alphanumeric + hypens, underscores, and periods are allowed)${reset}"
+read -r repo_name
 echo
-gh repo create "$repo_name" -p DaveRRC/BED-template -c --private
+if [[ $repo_name =~ ^[a-zA-Z0-9._-]+$ ]]; then
+    gh repo create "$repo_name" -p DaveRRC/BED-template -c --private
+else
+    echo "${red}Im pretty lenient when it comes to names but lets stay within the means here (ㆆ_ㆆ)... run the script again T.T${reset}"
+    exit
+fi
+echo "Sigh... (⌣́_⌣̀) I guess I'm creating the repo named: ${repo_name} "
+
 echo
 echo "Repo created (could've been more creative though)."
 echo "Also cloned repository locally (this is why i'm the goat)."
@@ -32,58 +66,58 @@ echo
 echo "Moving our cwd to the cloned repo (thank me later ^.^)."
 cd "${repo_name}" || exit
 echo
-sleep 2
 
 # start node environment
-echo "Alright, starting Node.js ⇒"
+echo "${bold}${reverse}${green_v2}Alright, starting Node.js ⇒${reset}"
 npm init -y > /dev/null
 echo
-echo "Node initialized."
+echo "${reverse}Node initialized.${reset}"
 echo 
-sleep 2
+sleep 1
 
 # express in build and in development dependencies
-echo "Installing Express for you (goated docs btw) (っ◕‿◕)っ."
+echo "${bold}${reverse}Installing Express for you (goated docs btw) (っ◕‿◕)っ.${reset}"
 npm i express
 npm i @types/express --save-dev
 echo
-echo "Express acquired (っ◕‿◕)っ."
+echo "${reverse}Express acquired (っ◕‿◕)っ.${reset}"
 echo
-sleep 2
+sleep 1
 
 # typescript in development dependencies
-echo "Installing TypeScript, the mother of all Types (⚆ _ ⚆)."
+echo "${bold}${reverse}${green}Installing TypeScript, the mother of all Types (⚆ _ ⚆).${reset}"
 npm i typescript ts-node @types/node --save-dev
 echo
-echo "TypeScript has been installed \(•◡•)/"
+echo "${reverse}TypeScript has been installed \(•◡•)/${reset}"
 echo
-sleep 2
+sleep 1
 
 # jest in development dependencies
-echo "Installing pain erm I mean Jest...╥﹏╥"
+echo "${bold}${reverse}${red}Installing pain erm I mean Jest...╥﹏╥${reset}"
 echo
 npm i jest ts-jest @types/jest --save-dev
 echo
-echo "Well that took long. Ignore those errors, nothingburger. Anyways, Jest installed......╥﹏╥"
+echo "Well that took long. Ignore those errors, nothingburger."
+echo "${reverse}Anyways, Jest installed......╥﹏╥${reset}"
 echo
 sleep 3
 
 # supertest in development dependencies
-echo "Installing SuperTest ƪ(˘⌣˘)ʃ"
+echo "${bold}${reverse}${yellow}Installing SuperTest ƪ(˘⌣˘)ʃ${reset}"
 npm i supertest @types/supertest --save-dev
 echo
 echo "Superman has arrived ƪ(˘⌣˘)ʃ."
 echo
-sleep 2
+sleep 1
 
 # morgan
-echo "Installing Morgan(a) ⇒"
+echo "${bold}${reverse}${green}Installing Morgan(a) ⇒${reset}"
 npm i morgan 
 npm i @types/morgan --save-dev
 echo
 echo "Morgan(a) installed - LEAGUE MENTIONED '(ᗒᗣᗕ)՞."
 echo 
-sleep 2
+sleep 1
 
 # jest configuration
 echo "Oh yah, configuring jest.config because you don't want to -.-"
@@ -102,9 +136,9 @@ module.exports = {
     ],
 };
 EOF
-echo "jest.config.js configured in '/'"
+echo "${italic}${reverse}jest.config.js configured in '/'${reset}"
 echo
-echo "Configured jest.config.js. You're welcome, (¬‿¬) you're welcome."
+echo "${bold}${italic}You're welcome, (¬‿¬) you're welcome.${reset}"
 sleep 2
 echo
 
@@ -120,7 +154,7 @@ jq '
 .directories.test = "test"
 ' package.json > placeholder.json && mv placeholder.json package.json 
 echo
-echo "package.json configured in '/'"
+echo "${italic}${reverse}package.json configured in '/'${reset}"
 sleep 2
 
 # make project directory
@@ -128,17 +162,17 @@ echo
 echo "Creating API structure ⇒"
 mkdir -p test/ src/api/v1
 sleep 2
-echo "API structure created."
+echo "${italic}${reverse}API structure created.${reset}"
 echo
 echo "Creating base files ⇒"
 sleep 2
 touch src/app.ts src/server.ts
-echo "Base files created."
+echo "${italic}${reverse}Base files created => 'src/app.ts', 'src/server.ts${reset}"
 echo
 echo
 echo
 echo "API Structure:"
-tree -h -I node_modules/
+ls -lR
 echo
 echo
 echo "Until next time chud (¬_¬)"
