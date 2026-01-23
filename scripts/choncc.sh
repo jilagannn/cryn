@@ -88,6 +88,7 @@ echo "Morgan(a) installed - LEAGUE MENTIONED."
 echo 
 sleep 2
 
+# jest configuration
 echo "Oh yah, configuring jest.config because you don't want to -.-"
 echo "Please wait, it's the best you could do :c"
 sleep 3
@@ -108,3 +109,17 @@ echo "jest.config.js configured in '/'"
 echo "Configured jest.config.js. You're welcome, you're welcome."
 sleep 3
 echo
+
+# update package.json for the scripts and jest testing
+echo "Updating package.json"
+sleep 2
+jq '
+.scripts["test:watch"] = "jest --watch" |
+.scripts.test = "jest" |
+.scripts["test:coverage"] = "jest --coverage" |
+.scripts.build = "tsc" |
+.scripts.start = "ts-node src/server.ts" |
+.directories.test = "test"
+' package.json > placeholder.json && mv placeholder.json package.json 
+echo "package.json configured in '/'"
+sleep 3
