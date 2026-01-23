@@ -87,3 +87,24 @@ echo
 echo "Morgan(a) installed - LEAGUE MENTIONED."
 echo 
 sleep 2
+
+echo "Oh yah, configuring jest.config because you don't want to -.-"
+echo "Please wait, it's the best you could do :c"
+sleep 3
+echo
+cat > jest.config.js << EOF
+module.exports = {
+    preset: "ts-jest",
+    testEnvironment: "node",
+    testMatch: ["**/*.test.ts"],
+    collectCoverageFrom: [
+        "src/**/*.ts",
+        "!src/server.ts", // this excludes server startup files
+        "!src/types/**/*.ts", // this excludes type definitions
+    ],
+};
+EOF
+echo "jest.config.js configured in '/'"
+echo "Configured jest.config.js. You're welcome, you're welcome."
+sleep 3
+echo
