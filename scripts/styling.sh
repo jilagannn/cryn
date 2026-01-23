@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # reset
 export reset=$'\e[0m'
 
