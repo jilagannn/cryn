@@ -109,18 +109,12 @@ sleep 1
 echo "${bold}${reverse}${yellow}SuperTest ƪ(˘⌣˘)ʃ${reset}"
 install_package "supertest" --save-dev
 install_package "@types/supertest" --save-dev
-# echo
-# echo "Superman has arrived ƪ(˘⌣˘)ʃ."
-# echo
 sleep 1
 
 # morgan
 echo "${bold}${reverse}${green}Morgan '(ᗒᗣᗕ)՞${reset}"
 install_package "morgan"
 install_package "@types/morgan" --save-dev
-# echo
-# echo "Morgan(a) installed - LEAGUE MENTIONED ."
-# echo 
 sleep 1
 echo
 echo "Build and dev dependencies installed O=('-'Q)"
