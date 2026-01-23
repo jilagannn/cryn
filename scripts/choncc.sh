@@ -169,6 +169,38 @@ sleep 2
 touch src/app.ts src/server.ts
 echo "${italic}${reverse}Base files created => 'src/app.ts', 'src/server.ts${reset}"
 echo
+echo "Creating basic express app ⇒"
+cat > src/app.ts << 'EOF'
+import express, { Express } from "express";
+
+// Initialize Express application
+const app: Express = express();
+
+// Define a route
+app.get("/", (req, res) => {
+    res.send("Hello, World!");
+});
+
+export default app;
+EOF
+sleep 1
+echo "${italic}${reverse}Basic express app created for 'src/app.ts'${reset}"
+echo
+echo "Creating server component"
+cat > src/server.ts << 'EOF'
+import app from "./app";
+import { Server } from "http";
+
+const PORT: string | number = process.env.PORT || 3000;
+
+const server: Server = app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
+export { server };
+EOF
+sleep 1
+echo "${italic}${reverse}Server component created on 'src/server.ts'${reset}"
 echo
 echo
 echo "API Structure:"
