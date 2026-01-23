@@ -3,7 +3,7 @@
 # shellcheck disable=SC1091
 # shellcheck disable=SC2154
 # source https://www.bashsupport.com/manual/inspections/
-source ../cryn/scripts/styling.sh
+source "$(dirname "$0")/styling.sh"
 
 # if anything fails -> exit
 set -eou pipefail
@@ -17,7 +17,7 @@ check_program() {
   fi
 }
 
-check_program "gh"
+check_program "node"
 check_program "npm"
 check_program "jq"
 check_program "gh"
