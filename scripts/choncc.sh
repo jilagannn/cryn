@@ -180,7 +180,7 @@ echo "${bold}${italic}I configured them for you - (¬‿¬) you're welcome.${res
 # make project directory
 echo
 echo "Creating API project directory ⇒"
-mkdir -p test/ src/api/v1
+mkdir -p test/ constants/ data/ src/api/v1/services/ src/api/v1/controllers/ src/api/v1/routes/
 sleep 2
 echo "${italic}${reverse}API structure created => 'src/api/v1', 'test/'${reset}"
 sleep 2
