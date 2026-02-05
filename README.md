@@ -37,13 +37,13 @@ A separate shell script file that contains several escape codes for text formatt
 3. **Execute the script:**
 
     ```bash
-    ./scriptname.sh
+    path/to/script/scriptname.sh
     ```
 
     example:
 
     ```bash
-    ./choncc.sh
+    Documents/cryn/scripts/choncc.sh
     ```
 
 ## Programs needed
