@@ -33,6 +33,24 @@ install_package() {
   fi
 }
 
+configure_package_json() {
+    sleep 2
+    jq '
+    .scripts["test:watch"] = "jest --watch" |
+    .scripts.test = "jest" |
+    .scripts["test:coverage"] = "jest --coverage" |
+    .scripts.build = "tsc" |
+    .scripts.start = "ts-node src/server.ts" |
+    .directories.test = "test"
+    ' package.json > placeholder.json && mv placeholder.json package.json 
+    echo "${italic}${reverse}package.json configured in '/'${reset}"
+}
+# parent directory of script
+script_path="$(cd "$(dirname "$0")" && /bin/pwd)"
+
+# this will get us the path to configs since dirname strips the cwd and gets parent dir -> parent dir of script cryn/
+cryn_configs_path="$(dirname "${script_path}")"
+
 echo "You are actually a lazy chud. What's the magic word? ( ﾟヮﾟ)"
 read -r word
 capitalized_input="${word^}"
@@ -124,55 +142,14 @@ echo
 echo "Oh yah, the config files because you don't want to T.T"
 echo "Please wait, it's the best you could do -.-"
 sleep 2
-cat > jest.config.js << EOF
-module.exports = {
-    preset: "ts-jest",
-    testEnvironment: "node",
-    testMatch: ["**/*.test.ts"],
-    collectCoverageFrom: [
-        "src/**/*.ts",
-        "!src/server.ts", // this excludes server startup files
-        "!src/types/**/*.ts", // this excludes type definitions
-    ],
-};
-EOF
+cp "${cryn_configs_path}/configs/back-end/node/jest-config.txt" "jest.config.js"
 echo "${italic}${reverse}jest.config.js configured in '/'${reset}"
 
 # update package.json for the scripts and jest testing
-sleep 2
-jq '
-.scripts["test:watch"] = "jest --watch" |
-.scripts.test = "jest" |
-.scripts["test:coverage"] = "jest --coverage" |
-.scripts.build = "tsc" |
-.scripts.start = "ts-node src/server.ts" |
-.directories.test = "test"
-' package.json > placeholder.json && mv placeholder.json package.json 
-echo "${italic}${reverse}package.json configured in '/'${reset}"
+configure_package_json
 
 sleep 2
-cat > .github/workflows/ci.yml << EOF
-name: Node.js CI
-
-on:
-    push:
-        branches: [main, development]
-    pull_request:
-        branches: [main, development]
-
-jobs:
-    build:
-        runs-on: ubuntu-latest
-
-        steps:
-            - uses: actions/checkout@v2
-            - name: Use Node.js
-              uses: actions/setup-node@v2
-              with:
-                  node-version: "20.x"
-            - run: npm install
-            - run: npm test
-EOF
+cp "${cryn_configs_path}/configs/back-end/actions/ci-yml.txt" ".github/workflows/ci.yml"
 echo "${italic}${reverse}ci.yml configured in '/.github/workflows'${reset}"
 echo
 echo "${bold}${italic}I configured them for you - (¬‿¬) you're welcome.${reset}"
@@ -180,47 +157,40 @@ echo "${bold}${italic}I configured them for you - (¬‿¬) you're welcome.${res
 # make project directory
 echo
 echo "Creating API project directory ⇒"
-mkdir -p test/ constants/ data/ src/api/v1/services/ src/api/v1/controllers/ src/api/v1/routes/
+mkdir -p config/ test/integration/ test/unit/ src/constants/ src/api/v1/services/ src/api/v1/controllers/ src/api/v1/routes/ src/api/v1/middleware/ src/api/v1/repositories/ src/api/v1/models/ src/api/v1/validations/ src/api/v1/utils/
 sleep 2
-echo "${italic}${reverse}API structure created => 'src/api/v1', 'test/'${reset}"
+echo "${italic}${reverse}API structure created => 'src/api/v1', 'src/constants/', 'test/', 'config/'${reset}"
 sleep 2
-touch src/app.ts src/server.ts
-echo "${italic}${reverse}Base files created => 'src/app.ts', 'src/server.ts'${reset}"
+
+touch sandbox.ts src/app.ts src/server.ts src/constants/httpConstants.ts src/api/v1/models/healthModel.ts src/api/v1/routes/healthRoutes.ts test/integration/app.test.ts test/integration/healthRoutes.test.ts
+echo "${italic}${reverse}Base files created => 'sandbox.ts','src/app.ts', 'src/server.ts', 'src/constants/httpConstants.ts', 'src/api/v1/models/healthModel.ts', 'src/api/v1/routes/healthRoutes.ts' ${reset}"
+
 echo
 echo "Creating base Express API ⇒"
-cat > src/app.ts << 'EOF'
-import express, { Express } from "express";
-import morgan from "morgan";
-
-// Initialize Express application
-const app: Express = express();
-
-// Setup Morgan
-app.use(morgan("combined"));
-
-// Define a route
-app.get("/", (req, res) => {
-    res.send("Hello, World!");
-});
-
-export default app;
-EOF
+cp "${cryn_configs_path}/configs/back-end/express/app.txt" "src/app.ts"
 sleep 1
 echo "${italic}${reverse}Basic express app created for 'src/app.ts'${reset}"
-cat > src/server.ts << 'EOF'
-import app from "./app";
-import { Server } from "http";
 
-const PORT: string | number = process.env.PORT || 3000;
-
-const server: Server = app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
-
-export { server };
-EOF
+cp "${cryn_configs_path}/configs/back-end/express/server.txt" "src/server.ts"
 sleep 1
 echo "${italic}${reverse}Server component created on 'src/server.ts'${reset}"
+
+cp "${cryn_configs_path}/configs/back-end/files/httpConstants.txt" "src/constants/httpConstants.ts"
+sleep 1
+echo "${italic}${reverse}Constants created on 'src/constants/httpConstants.ts'${reset}"
+
+cp "${cryn_configs_path}/configs/back-end/files/healthModel.txt" "src/api/v1/models/healthModel.ts"
+sleep 1
+cp "${cryn_configs_path}/configs/back-end/files/healthRoutes.txt" "src/api/v1/routes/healthRoutes.ts"
+sleep 1
+echo "${italic}${reverse}Health check endpoint created on 'src/api/v1/models, src/api/v1/routes'${reset}"
+
+cp "${cryn_configs_path}/configs/back-end/files/appTest.txt" "test/integration/app.test.ts"
+sleep 1
+cp "${cryn_configs_path}/configs/back-end/files/healthRoutesTest.txt" "test/integration/healthRoutes.test.ts"
+sleep 1
+echo "${italic}${reverse}Configured base tests in 'test/integration/'${reset}"
+
 echo
 echo
 echo "API Structure:"
