@@ -115,7 +115,7 @@ print_dependencies_to_be_installed() {
     echo "${bold}${reverse}${yellow}SuperTest ƪ(˘⌣˘)ʃ${reset}"
     echo "${bold}${reverse}${green}Morgan '(ᗒᗣᗕ)՞${reset}"
     echo "${bold}${reverse}${yellow}Joi ʕ•ᴥ•ʔ${reset}"
-    echo "${bold}${reverse}${orange}Firebase ᕙ(-‸-‶)ᕗ${reset}"
+    echo "${bold}${reverse}${orange}Firebase ᕙ(⇀‸↼')ᕗ${reset}"
     echo
 }
 
