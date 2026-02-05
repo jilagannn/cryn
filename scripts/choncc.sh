@@ -45,6 +45,8 @@ configure_package_json() {
     ' package.json > placeholder.json && mv placeholder.json package.json 
     echo "${italic}${reverse}package.json configured in '/'${reset}"
 }
+# parent directory of script
+script_path="$(cd "$(dirname "$0") && /bin/pwd")"
 
 echo "You are actually a lazy chud. What's the magic word? ( ﾟヮﾟ)"
 read -r word
@@ -162,27 +164,27 @@ echo "${italic}${reverse}Base files created => 'src/app.ts', 'src/server.ts', 's
 
 echo
 echo "Creating base Express API ⇒"
-cp "../configs/back-end/express/app.txt" "src/app.ts"
+cp "${script_path}/configs/back-end/express/app.txt" "src/app.ts"
 sleep 1
 echo "${italic}${reverse}Basic express app created for 'src/app.ts'${reset}"
 
-cp "../configs/back-end/express/server.txt" "src/server.ts"
+cp "${script_path}/configs/back-end/express/server.txt" "src/server.ts"
 sleep 1
 echo "${italic}${reverse}Server component created on 'src/server.ts'${reset}"
 
-cp "../configs/back-end/files/httpConstants.txt" "src/constants/httpConstants.ts"
+cp "${script_path}/configs/back-end/files/httpConstants.txt" "src/constants/httpConstants.ts"
 sleep 1
 echo "${italic}${reverse}Constants created on 'src/constants/httpConstants.ts'${reset}"
 
-cp "../configs/back-end/files/healthModel.txt" "src/api/v1/models/healthModel.ts"
+cp "${script_path}/configs/back-end/files/healthModel.txt" "src/api/v1/models/healthModel.ts"
 sleep 1
-cp "../configs/back-end/files/healthRoutes.txt" "src/api/v1/routes/healthRoutes.ts"
+cp "${script_path}/configs/back-end/files/healthRoutes.txt" "src/api/v1/routes/healthRoutes.ts"
 sleep 1
 echo "${italic}${reverse}Health check endpoint created on 'src/api/v1/models, src/api/v1/routes'${reset}"
 
-cp "../configs/back-end/files/appTest.txt" "test/integration/app.test.ts"
+cp "${script_path}/configs/back-end/files/appTest.txt" "test/integration/app.test.ts"
 sleep 1
-cp "../configs/back-end/files/healthRoutesTest.txt" "test/integration/healthRoutes.test.ts"
+cp "${script_path}/configs/back-end/files/healthRoutesTest.txt" "test/integration/healthRoutes.test.ts"
 sleep 1
 echo "${italic}${reverse}Configured base tests in 'test/integration/'${reset}"
 
