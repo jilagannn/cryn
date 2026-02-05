@@ -46,10 +46,6 @@ A separate shell script file that contains several escape codes for text formatt
     ./choncc.sh
     ```
 
-4. **Follow the prompts**
-
-5. **Verify repository is created locally and on GitHub.**
-
 ## Programs needed
 
 ### gh cli
