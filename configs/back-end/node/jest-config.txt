@@ -1,0 +1,10 @@
+module.exports = {
+    preset: "ts-jest",
+    testEnvironment: "node",
+    testMatch: ["**/*.test.ts"],
+    collectCoverageFrom: [
+        "src/**/*.ts",
+        "!src/server.ts", // this excludes server startup files
+        "!src/types/**/*.ts", // this excludes type definitions
+    ],
+};

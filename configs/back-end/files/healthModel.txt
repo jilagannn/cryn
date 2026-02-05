@@ -1,0 +1,9 @@
+/**
+ * Represents the response structure for a health check endpoint
+ */
+export interface HealthCheckResponse {
+    status: string;
+    uptime: number;
+    timestamp: string;
+    version: string;
+};
