@@ -13,3 +13,91 @@ A script written to create Express.js applications, installing the required buil
 ### styling.sh
 
 A separate shell script file that contains several escape codes for text formatting and styling.
+
+## How To Use
+
+1. **Clone the repository into a directory.**
+
+    ```bash
+    git clone git@github.com:jilagannn/cryn.git
+    ```
+
+    or
+
+    ```bash
+    git clone https://github.com/jilagannn/cryn.git
+    ```
+
+2. **Navigate to the directory you want to use the script in.**
+
+    ```bash
+    cd path/to/target/directory
+    ```
+
+3. **Execute the script:**
+
+    ```bash
+    ./scriptname.sh
+    ```
+
+    example:
+
+    ```bash
+    ./choncc.sh
+    ```
+
+4. **Follow the prompts**
+
+5. **Verify repository is created locally and on GitHub.**
+
+## Programs needed
+
+### gh cli
+
+1. Check if installed:
+
+    ```bash
+    gh --version
+    ```
+
+2. If nothing, install here:
+
+    ```plaintext
+    https://cli.github.com/
+    ```
+
+### Node.js / NPM
+
+1. Check of installed:
+
+    Npm:
+
+    ```bash
+    npm --v
+    ```
+
+    Node:
+
+    ```bash
+    node -v
+    ```
+
+2. If nothing, install here:
+
+    ```plaintext
+    https://nodejs.org/en
+    ```
+
+### jq
+
+1. Check if installed:
+
+    ```bash
+    jq -V
+    ```
+
+2. If nothing, install here:
+
+    ```plaintext
+    https://jqlang.org/download/
+    ```
