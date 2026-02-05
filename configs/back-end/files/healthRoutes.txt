@@ -1,0 +1,17 @@
+import express, { Router } from "express";
+import { HealthCheckResponse } from "../models/healthModel";
+
+const router: Router = express.Router();
+
+router.get("/", (req, res) => {
+    const healthData: HealthCheckResponse = {
+        status: "OK",
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+        version: "1.0.0",
+    };
+
+    res.json(healthData);
+});
+
+export default router;
