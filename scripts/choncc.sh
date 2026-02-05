@@ -114,6 +114,8 @@ print_dependencies_to_be_installed() {
     echo "${bold}${reverse}${red}Pain... erm I mean Jest... ╥﹏╥${reset}"
     echo "${bold}${reverse}${yellow}SuperTest ƪ(˘⌣˘)ʃ${reset}"
     echo "${bold}${reverse}${green}Morgan '(ᗒᗣᗕ)՞${reset}"
+    echo "${bold}${reverse}${yellow}Joi ʕ•ᴥ•ʔ${reset}"
+    echo "${bold}${reverse}${orange}Firebase ᕙ(⇀‸↼‶)ᕗ${reset}"
     echo
 }
 
@@ -141,6 +143,9 @@ install_all_dependencies() {
     install_package "morgan"
     install_package "@types/morgan" --save-dev
     sleep 1
+    install_package "joi"
+    sleep 1
+    install_package "firebase-admin"
     echo "Build and dev dependencies installed O=('-'Q)"
     echo
     echo
