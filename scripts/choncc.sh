@@ -46,7 +46,7 @@ configure_package_json() {
     echo "${italic}${reverse}package.json configured in '/'${reset}"
 }
 # parent directory of script
-script_path="$(cd "$(dirname "$0") && /bin/pwd")"
+script_path="$(cd "$(dirname "$0")" && /bin/pwd)"
 
 echo "You are actually a lazy chud. What's the magic word? ( ﾟヮﾟ)"
 read -r word
@@ -139,7 +139,7 @@ echo
 echo "Oh yah, the config files because you don't want to T.T"
 echo "Please wait, it's the best you could do -.-"
 sleep 2
-cp "../configs/back-end/node/jest-config.txt" "jest.config.js"
+cp "${script_path}/configs/back-end/node/jest-config.txt" "jest.config.js"
 echo "${italic}${reverse}jest.config.js configured in '/'${reset}"
 
 # update package.json for the scripts and jest testing
