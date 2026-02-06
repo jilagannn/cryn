@@ -4,7 +4,7 @@
 
 C.R.Y.N. is a set of bash scripts I came up with to deal with recurring directory setups for projects or assignments.
 
-## Lineup
+## Features
 
 ### choncc.sh
 
@@ -14,7 +14,16 @@ A script written to create Express.js applications, installing the required buil
 
 A separate shell script file that contains several escape codes for text formatting and styling.
 
-## How To Use
+## Requirements
+
+Before you actually use these scripts yourself, please make sure to have these installed:
+
+- **Node.js:** LTS version recommended. You can download it from [nodejs.org](https://nodejs.org/).
+- **npm:** (installed with Node.js)
+- **gh cli:** GitHub CLI. You can download it from [cli.github.com](https://cli.github.com/) if not installed.
+- **jq:** SED for JSON data. You can install it from here at [jqlang.org](https://jqlang.org/download/)
+
+## Installation
 
 1. **Clone the repository into a directory.**
 
@@ -28,13 +37,17 @@ A separate shell script file that contains several escape codes for text formatt
     git clone https://github.com/jilagannn/cryn.git
     ```
 
-2. **Navigate to the directory you want to use the script in.**
+## Usage
+
+1. **Navigate to the directory you want to use the script in.**
 
     ```bash
     cd path/to/target/directory
     ```
 
-3. **Execute the script:**
+2. **Execute the script.**
+
+    Reference the path to the script in your current working directory:
 
     ```bash
     path/to/script/scriptname.sh
@@ -43,57 +56,5 @@ A separate shell script file that contains several escape codes for text formatt
     example:
 
     ```bash
-    Documents/cryn/scripts/choncc.sh
-    ```
-
-## Programs needed
-
-### gh cli
-
-1. Check if installed:
-
-    ```bash
-    gh --version
-    ```
-
-2. If nothing, install here:
-
-    ```plaintext
-    https://cli.github.com/
-    ```
-
-### Node.js / NPM
-
-1. Check of installed:
-
-    Npm:
-
-    ```bash
-    npm --v
-    ```
-
-    Node:
-
-    ```bash
-    node -v
-    ```
-
-2. If nothing, install here:
-
-    ```plaintext
-    https://nodejs.org/en
-    ```
-
-### jq
-
-1. Check if installed:
-
-    ```bash
-    jq -V
-    ```
-
-2. If nothing, install here:
-
-    ```plaintext
-    https://jqlang.org/download/
+    home/user/Documents/cryn/scripts/choncc.sh
     ```
