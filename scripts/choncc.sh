@@ -216,10 +216,24 @@ wrap_up() {
     echo
     echo
     echo "Until next time chud (¬_¬)"
-    echo "Total runtime -> $SECONDS seconds"
+}
+
+create_logs() {
+    touch post-processing.log
+    touch error.log
+}
+
+write_log() {
+    date=$(date '+%Y-%m-%d %H:%M:%S')
+    exit_code=${1}
+    logged_message=${2}
+    log_file=${3}
+    echo "${date}, ${exit_code}, ${logged_message}" | tee -a ${log_file}
 }
 
 main() {
+    create_logs
+    write_log "$?" "Choncc Initialized." "./post-processing.log"
     magic_word_guard
     create_github_repo
     create_node_env
@@ -228,6 +242,8 @@ main() {
     configure_base_files
     configure_config_files
     wrap_up
+    write_log "$?" "Completed Script." "./post-processing.log"
+    write_log "$?" "Total runtime -> $SECONDS seconds." "./post-processing.log"
 }
 
 main
