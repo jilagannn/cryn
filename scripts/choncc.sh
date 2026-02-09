@@ -27,8 +27,8 @@ install_package() {
   local package="$1"
   local flags="${2:-}"
 
-  if ! npm i "$package" "$flags" 2>> "${ERRORS_LOG}" > "${POST_LOG}"; then
-    write_log "$?" "Failed to install $package" "${ERRORS_LOG}"
+  if ! npm i "$package" "$flags" 2>> "${ERRORS_LOG_PATH}" > "${POST_LOG_PATH}"; then
+    write_log "$?" "Failed to install $package" "${ERRORS_LOG_PATH}"
     echo "${bold}${red}Failed to install $package T.T${reset}"
     exit 1
   fi
@@ -102,8 +102,8 @@ create_github_repo() {
 
 create_node_env() {
     echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
-    if ! npm init -y 2> "${ERRORS_LOG}" > "${POST_LOG}"; then
-        write_log "$?" "Failed to start node / npm." "${ERRORS_LOG}"
+    if ! npm init -y 2> "${ERRORS_LOG_PATH}" > "${POST_LOG}"; then
+        write_log "$?" "Failed to start node / npm." "${ERRORS_LOG_PATH}"
         echo "${reverse}Node initialized.${reset}"
         exit 1
     fi
@@ -225,11 +225,12 @@ wrap_up() {
     echo "Until next time chud (¬_¬)"
 }
 
+POST_LOG_PATH="./post-processing.log"
+ERRORS_LOG_PATH="./errors.log"
+
 create_logs() {
-    touch post-processing.log
-    touch errors.log
-    POST_LOG="./post-processing.log"
-    ERRORS_LOG="./errors.log"
+    log_file=${1}
+    touch "${log_file}"
 }
 
 write_log() {
@@ -237,12 +238,13 @@ write_log() {
     exit_code=${1}
     logged_message=${2}
     log_file=${3}
-    echo "${date}, ${exit_code}, ${logged_message}" | tee -a ${log_file}
+    echo "${date}, ${exit_code}, ${logged_message}" | tee -a "${log_file}"
 }
 
 main() {
-    create_logs
-    write_log "$?" "Choncc Initialized." "./post-processing.log"
+    create_logs "post-processing.log"
+    create_logs "errors.log"
+    write_log "$?" "Choncc Initialized." "${POST_LOG_PATH}"
     magic_word_guard
     create_github_repo
     create_node_env
@@ -251,8 +253,8 @@ main() {
     configure_base_files
     configure_config_files
     wrap_up
-    write_log "$?" "Completed Script." "./post-processing.log"
-    write_log "$?" "Total runtime -> $SECONDS seconds." "./post-processing.log"
+    write_log "$?" "Completed Script." "${POST_LOG_PATH}"
+    write_log "$?" "Total runtime -> $SECONDS seconds." "${POST_LOG_PATH}"
 }
 
 main
