@@ -27,7 +27,8 @@ install_package() {
   local package="$1"
   local flags="${2:-}"
 
-  if ! npm i "$package" "$flags" > /dev/null 2>&1; then
+  if ! npm i "$package" "$flags" 2>> "${ERRORS_LOG}" > "${POST_LOG}"; then
+    write_log "$?" "Failed to install $package" "${ERRORS_LOG}"
     echo "${bold}${red}Failed to install $package T.T${reset}"
     exit 1
   fi
@@ -101,9 +102,12 @@ create_github_repo() {
 
 create_node_env() {
     echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
-    npm init -y > /dev/null 2>&1
-    echo "${reverse}Node initialized.${reset}"
-    echo 
+    if ! npm init -y 2> "${ERRORS_LOG}" > "${POST_LOG}"; then
+        write_log "$?" "Failed to start node / npm." "${ERRORS_LOG}"
+        echo "${reverse}Node initialized.${reset}"
+        exit 1
+    fi
+    echo
 }
 
 print_dependencies_to_be_installed() {
@@ -149,6 +153,7 @@ install_all_dependencies() {
     echo "Build and dev dependencies installed O=('-'Q)"
     echo
     echo
+    write_log "$?" "Successfully installed Express.js, TypeScript, Jest, Supertest, Morgan, Joi, and Firebase." "./post-processing.log"
 }
 
 configure_base_files() {
@@ -189,6 +194,7 @@ configure_base_files() {
     echo "${italic}${reverse}Configured base tests in 'test/integration/'${reset}"
     echo
     echo
+    write_log "$?" "Successfully configured base directory and files" "./post-processing.log"
 }
 
 configure_config_files() {
@@ -208,6 +214,7 @@ configure_config_files() {
     echo "${bold}${italic}I configured them for you - (¬‿¬) you're welcome.${reset}"
     echo
     echo
+    write_log "$?" "Successfully set up config files" "./post-processing.log"
 }
 
 wrap_up() {
@@ -220,7 +227,9 @@ wrap_up() {
 
 create_logs() {
     touch post-processing.log
-    touch error.log
+    touch errors.log
+    POST_LOG="./post-processing.log"
+    ERRORS_LOG="./errors.log"
 }
 
 write_log() {
