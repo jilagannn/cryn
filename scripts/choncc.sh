@@ -27,7 +27,7 @@ install_package() {
   local package="$1"
   local flags="${2:-}"
 
-  if ! npm i "$package" "$flags" 2>> "${ERRORS_LOG_PATH}" > "${POST_LOG_PATH}"; then
+  if ! npm i "$package" "$flags" 2>> "${ERRORS_LOG_PATH}" 1>> "${POST_LOG_PATH}"; then
     write_log "$?" "Failed to install $package" "${ERRORS_LOG_PATH}"
     echo "${bold}${red}Failed to install $package T.T${reset}"
     exit 1
@@ -102,7 +102,7 @@ create_github_repo() {
 
 create_node_env() {
     echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
-    if ! npm init -y 2> "${ERRORS_LOG_PATH}" > "${POST_LOG}"; then
+    if ! npm init -y 2>> "${ERRORS_LOG_PATH}" 1>> "${POST_LOG_PATH}"; then
         write_log "$?" "Failed to start node / npm." "${ERRORS_LOG_PATH}"
         echo "${reverse}Node initialized.${reset}"
         exit 1
@@ -153,7 +153,7 @@ install_all_dependencies() {
     echo "Build and dev dependencies installed O=('-'Q)"
     echo
     echo
-    write_log "$?" "Successfully installed Express.js, TypeScript, Jest, Supertest, Morgan, Joi, and Firebase." "./post-processing.log"
+    write_log "$?" "Successfully installed Express.js, TypeScript, Jest, Supertest, Morgan, Joi, and Firebase." "${POST_LOG_PATH}"
 }
 
 configure_base_files() {
@@ -194,7 +194,7 @@ configure_base_files() {
     echo "${italic}${reverse}Configured base tests in 'test/integration/'${reset}"
     echo
     echo
-    write_log "$?" "Successfully configured base directory and files" "./post-processing.log"
+    write_log "$?" "Successfully configured base directory and files" "${POST_LOG_PATH}"
 }
 
 configure_config_files() {
@@ -214,7 +214,7 @@ configure_config_files() {
     echo "${bold}${italic}I configured them for you - (¬‿¬) you're welcome.${reset}"
     echo
     echo
-    write_log "$?" "Successfully set up config files" "./post-processing.log"
+    write_log "$?" "Successfully set up config files" "${POST_LOG_PATH}"
 }
 
 wrap_up() {
@@ -225,12 +225,17 @@ wrap_up() {
     echo "Until next time chud (¬_¬)"
 }
 
-POST_LOG_PATH="./post-processing.log"
-ERRORS_LOG_PATH="./errors.log"
+POST_LOG_PATH="./logs/post-processing.log"
+ERRORS_LOG_PATH="./logs/errors.log"
 
-create_logs() {
-    log_file=${1}
-    touch "${log_file}"
+create_log() {
+    log_dir="logs/"
+    if [ ! -d "${log_dir}" ]; then
+        mkdir "logs/"
+    else
+        log_file=${1}
+        touch "${log_file}"
+    fi
 }
 
 write_log() {
@@ -242,11 +247,11 @@ write_log() {
 }
 
 main() {
-    create_logs "post-processing.log"
-    create_logs "errors.log"
-    write_log "$?" "Choncc Initialized." "${POST_LOG_PATH}"
     magic_word_guard
     create_github_repo
+    create_log "/logs/post-processing.log"
+    create_log "logs/errors.log"
+    write_log "$?" "Choncc Initialized." "${POST_LOG_PATH}"
     create_node_env
     print_dependencies_to_be_installed
     install_all_dependencies
