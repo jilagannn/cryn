@@ -27,7 +27,8 @@ install_package() {
   local package="$1"
   local flags="${2:-}"
 
-  if ! npm i "$package" "$flags" > /dev/null 2>&1; then
+  if ! npm i "$package" "$flags" 2>> "${ERRORS_LOG_PATH}" 1>> "${POST_LOG_PATH}"; then
+    write_log "ERROR" "${EXIT_CODE}" "${EXIT_CODE}" "Failed to install $package" "${ERRORS_LOG_PATH}"
     echo "${bold}${red}Failed to install $package T.T${reset}"
     exit 1
   fi
@@ -101,9 +102,13 @@ create_github_repo() {
 
 create_node_env() {
     echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
-    npm init -y > /dev/null 2>&1
+    if ! npm init -y 2>> "${ERRORS_LOG_PATH}" 1>> "${POST_LOG_PATH}"; then
+        write_log "ERROR" "${EXIT_CODE}" "Failed to start node / npm." "${ERRORS_LOG_PATH}"
+        exit 1
+    fi
     echo "${reverse}Node initialized.${reset}"
-    echo 
+    write_log "INFO" "${EXIT_CODE}" "Initialized Node environment." "${POST_LOG_PATH}"
+    echo
 }
 
 print_dependencies_to_be_installed() {
@@ -149,6 +154,7 @@ install_all_dependencies() {
     echo "Build and dev dependencies installed O=('-'Q)"
     echo
     echo
+    write_log "INFO" "${EXIT_CODE}" "Successfully installed Express.js, TypeScript, Jest, Supertest, Morgan, Joi, and Firebase." "${POST_LOG_PATH}"
 }
 
 configure_base_files() {
@@ -189,6 +195,7 @@ configure_base_files() {
     echo "${italic}${reverse}Configured base tests in 'test/integration/'${reset}"
     echo
     echo
+    write_log "INFO" "${EXIT_CODE}" "Successfully configured base directory and files" "${POST_LOG_PATH}"
 }
 
 configure_config_files() {
@@ -208,6 +215,7 @@ configure_config_files() {
     echo "${bold}${italic}I configured them for you - (¬‿¬) you're welcome.${reset}"
     echo
     echo
+    write_log "INFO" "${EXIT_CODE}" "Successfully set up config files" "${POST_LOG_PATH}"
 }
 
 wrap_up() {
@@ -216,18 +224,48 @@ wrap_up() {
     echo
     echo
     echo "Until next time chud (¬_¬)"
-    echo "Total runtime -> $SECONDS seconds"
+    write_log "INFO" "${EXIT_CODE}" "Finished script." "${POST_LOG_PATH}"
+}
+
+POST_LOG_PATH="./logs/post-processing.log"
+ERRORS_LOG_PATH="./logs/errors.log"
+
+create_log() {
+    log_dir="logs/"
+    if [ ! -d "${log_dir}" ]; then
+        mkdir "logs/"
+    else
+        log_file=${1}
+        touch "${log_file}"
+    fi
+}
+
+EXIT_CODE=$?
+
+write_log() {
+    date=$(date '+%Y-%m-%d %H:%M:%S')
+    log_header=${1}
+    exit_status=${2}
+    logged_message=${3}
+    log_file=${4}
+    echo "${date}, ${log_header}, ${exit_status} ${logged_message}" >> "${log_file}"
 }
 
 main() {
     magic_word_guard
     create_github_repo
+    create_log "/logs/post-processing.log"
+    create_log "logs/errors.log"
+    write_log "INFO" "${EXIT_CODE}" "Choncc Initialized." "${POST_LOG_PATH}"
+    write_log "INFO" "${EXIT_CODE}" "GitHub repository created." "${POST_LOG_PATH}"
     create_node_env
     print_dependencies_to_be_installed
     install_all_dependencies
     configure_base_files
     configure_config_files
     wrap_up
+    write_log "INFO" "${EXIT_CODE}" "Completed Script." "${POST_LOG_PATH}"
+    write_log "INFO" "${EXIT_CODE}" "Total runtime -> $SECONDS seconds." "${POST_LOG_PATH}"
 }
 
 main
