@@ -1,0 +1,5 @@
+# python
+.venv/
+
+# burno
+credentials.json
