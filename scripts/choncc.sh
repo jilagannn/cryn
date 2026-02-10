@@ -104,9 +104,9 @@ create_node_env() {
     echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
     if ! npm init -y 2>> "${ERRORS_LOG_PATH}" 1>> "${POST_LOG_PATH}"; then
         write_log "$?" "Failed to start node / npm." "${ERRORS_LOG_PATH}"
-        echo "${reverse}Node initialized.${reset}"
         exit 1
     fi
+    echo "${reverse}Node initialized.${reset}"
     echo
 }
 
@@ -243,7 +243,7 @@ write_log() {
     exit_code=${1}
     logged_message=${2}
     log_file=${3}
-    echo "${date}, ${exit_code}, ${logged_message}" | tee -a "${log_file}"
+    echo "${date}, ${exit_code}, ${logged_message}" >> "${log_file}"
 }
 
 main() {
