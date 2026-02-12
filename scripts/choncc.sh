@@ -8,12 +8,17 @@ source "$(dirname "$0")/styling.sh"
 # if anything fails -> exit
 set -eou pipefail
 
+# Constants
+readonly SHORT_DELAY=1
+readonly LONG_DELAY=2
+readonly EXIT_FAILURE=1
+
 # for checking if the user will have the programs like gh cli, jq etc
 check_program() {
   if ! command -v "$1" > /dev/null 2>&1; then
     echo "${red}Looks like you don't have $1 (⌣́_⌣̀)${reset}"
     echo "Install $1 and come back."
-    exit 1
+    exit "${EXIT_FAILURE}"
   fi
 }
 
@@ -30,12 +35,12 @@ install_package() {
   if ! npm i "$package" "$flags" 2>> "${ERRORS_LOG_PATH}" 1>> "${POST_LOG_PATH}"; then
     write_log "ERROR" "${EXIT_CODE}" "${EXIT_CODE}" "Failed to install $package" "${ERRORS_LOG_PATH}"
     echo "${bold}${red}Failed to install $package T.T${reset}"
-    exit 1
+    exit "${EXIT_FAILURE}"
   fi
 }
 
 configure_package_json() {
-    sleep 2
+    sleep "${LONG_DELAY}"
     jq '
     .scripts["test:watch"] = "jest --watch" |
     .scripts.test = "jest" |
@@ -92,7 +97,7 @@ create_github_repo() {
             echo "${red}Failed to create the GitHub repository '${repo_name}'.${reset}"
             echo "${red}Common issues:${reset} authentication problems (did you forget to log in?), the repository already exists (I knew that name was bad), or network connectivity errors (I heard ethernet is good)."
             echo "Figure out what went wrong and then run the script again ( ━☞◔‿ゝ◔)━☞"
-            exit 1
+            exit "${EXIT_FAILURE}"
         fi
     else
         echo "${red}I'm pretty lenient when it comes to names but lets stay within the means here (ㆆ_ㆆ)... run the script again T.T${reset}"
@@ -104,7 +109,7 @@ create_node_env() {
     echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
     if ! npm init -y 2>> "${ERRORS_LOG_PATH}" 1>> "${POST_LOG_PATH}"; then
         write_log "ERROR" "${EXIT_CODE}" "Failed to start node / npm." "${ERRORS_LOG_PATH}"
-        exit 1
+        exit "${EXIT_FAILURE}"
     fi
     echo "${reverse}Node initialized.${reset}"
     write_log "INFO" "${EXIT_CODE}" "Initialized Node environment." "${POST_LOG_PATH}"
@@ -113,7 +118,7 @@ create_node_env() {
 
 print_dependencies_to_be_installed() {
     echo "${italic}${underline}Acquiring dependencies to install...${reset}"
-    sleep 2
+    sleep "${LONG_DELAY}"
     echo "${reverse}${bold}Express (goated docs btw) (っ◕‿◕)っ.${reset}"
     echo "${bold}${reverse}${green}TypeScript, the mother of all Types (⚆ _ ⚆).${reset}"
     echo "${bold}${reverse}${red}Pain... erm I mean Jest... ╥﹏╥${reset}"
@@ -129,27 +134,27 @@ install_all_dependencies() {
     # express in build and in development dependencies
     install_package "express"
     install_package "@types/express" --save-dev 
-    sleep 1
+    sleep "${SHORT_DELAY}"
      # typescript in development dependencies
     install_package "typescript" --save-dev
     install_package "ts-node" --save-dev
     install_package "@types/node" --save-dev
-    sleep 1
+    sleep "${SHORT_DELAY}"
     # jest in development dependencies
     install_package "jest" --save-dev
     install_package "ts-jest" --save-dev
     install_package "@types/jest" --save-dev
-    sleep 1
+    sleep "${SHORT_DELAY}"
     # supertest in development dependencies
     install_package "supertest" --save-dev
     install_package "@types/supertest" --save-dev
-    sleep 1
+    sleep "${SHORT_DELAY}"
     # morgan
     install_package "morgan"
     install_package "@types/morgan" --save-dev
-    sleep 1
+    sleep "${SHORT_DELAY}"
     install_package "joi"
-    sleep 1
+    sleep "${SHORT_DELAY}"
     install_package "firebase-admin"
     echo "Build and dev dependencies installed O=('-'Q)"
     echo
@@ -160,9 +165,9 @@ install_all_dependencies() {
 configure_base_files() {
     echo "Creating API project directory ⇒"
     mkdir -p config/ test/integration/ test/unit/ src/constants/ src/api/v1/services/ src/api/v1/controllers/ src/api/v1/routes/ src/api/v1/middleware/ src/api/v1/repositories/ src/api/v1/models/ src/api/v1/validations/ src/api/v1/utils/
-    sleep 2
+    sleep "${LONG_DELAY}"
     echo "${italic}${reverse}API structure created => 'src/api/v1', 'src/constants/', 'test/', 'config/'${reset}"
-    sleep 2
+    sleep "${LONG_DELAY}"
 
     # base files
     touch sandbox.ts src/app.ts src/server.ts src/constants/httpConstants.ts src/api/v1/models/healthModel.ts src/api/v1/routes/healthRoutes.ts test/integration/app.test.ts test/integration/healthRoutes.test.ts
@@ -171,27 +176,27 @@ configure_base_files() {
 
     echo "Creating base Express API ⇒"
     cp "${cryn_configs_path}/configs/back-end/express/app.txt" "src/app.ts"
-    sleep 1
+    sleep "${SHORT_DELAY}"
     echo "${italic}${reverse}Basic express app created for 'src/app.ts'${reset}"
 
     cp "${cryn_configs_path}/configs/back-end/express/server.txt" "src/server.ts"
-    sleep 1
+    sleep "${SHORT_DELAY}"
     echo "${italic}${reverse}Server component created on 'src/server.ts'${reset}"
 
     cp "${cryn_configs_path}/configs/back-end/files/httpConstants.txt" "src/constants/httpConstants.ts"
-    sleep 1
+    sleep "${SHORT_DELAY}"
     echo "${italic}${reverse}Constants created on 'src/constants/httpConstants.ts'${reset}"
 
     cp "${cryn_configs_path}/configs/back-end/files/healthModel.txt" "src/api/v1/models/healthModel.ts"
-    sleep 1
+    sleep "${SHORT_DELAY}"
     cp "${cryn_configs_path}/configs/back-end/files/healthRoutes.txt" "src/api/v1/routes/healthRoutes.ts"
-    sleep 1
+    sleep "${SHORT_DELAY}"
     echo "${italic}${reverse}Health check endpoint created on 'src/api/v1/models, src/api/v1/routes'${reset}"
 
     cp "${cryn_configs_path}/configs/back-end/files/appTest.txt" "test/integration/app.test.ts"
-    sleep 1
+    sleep "${SHORT_DELAY}"
     cp "${cryn_configs_path}/configs/back-end/files/healthRoutesTest.txt" "test/integration/healthRoutes.test.ts"
-    sleep 1
+    sleep "${SHORT_DELAY}"
     echo "${italic}${reverse}Configured base tests in 'test/integration/'${reset}"
     echo
     echo
@@ -201,14 +206,14 @@ configure_base_files() {
 configure_config_files() {
     echo "Oh yah, the config files because you don't want to T.T"
     echo "Please wait, it's the best you could do -.-"
-    sleep 2
+    sleep "${LONG_DELAY}"
     cp "${cryn_configs_path}/configs/back-end/node/jest-config.txt" "jest.config.js"
     echo "${italic}${reverse}jest.config.js configured in '/'${reset}"
 
     # update package.json for the scripts and jest testing
     configure_package_json
 
-    sleep 2
+    sleep "${LONG_DELAY}"
     cp "${cryn_configs_path}/configs/back-end/actions/ci-yml.txt" ".github/workflows/ci.yml"
     echo "${italic}${reverse}ci.yml configured in '/.github/workflows'${reset}"
     echo
