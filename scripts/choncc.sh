@@ -18,7 +18,7 @@ check_program() {
   if ! command -v "$1" > /dev/null 2>&1; then
     echo "${red}Looks like you don't have $1 (⌣́_⌣̀)${reset}"
     echo "Install $1 and come back."
-    exit {$EXIT_FAILURE}
+    exit "${EXIT_FAILURE}"
   fi
 }
 
@@ -35,7 +35,7 @@ install_package() {
   if ! npm i "$package" "$flags" 2>> "${ERRORS_LOG_PATH}" 1>> "${POST_LOG_PATH}"; then
     write_log "ERROR" "${EXIT_CODE}" "${EXIT_CODE}" "Failed to install $package" "${ERRORS_LOG_PATH}"
     echo "${bold}${red}Failed to install $package T.T${reset}"
-    exit {$EXIT_FAILURE}
+    exit "${EXIT_FAILURE}"
   fi
 }
 
@@ -97,7 +97,7 @@ create_github_repo() {
             echo "${red}Failed to create the GitHub repository '${repo_name}'.${reset}"
             echo "${red}Common issues:${reset} authentication problems (did you forget to log in?), the repository already exists (I knew that name was bad), or network connectivity errors (I heard ethernet is good)."
             echo "Figure out what went wrong and then run the script again ( ━☞◔‿ゝ◔)━☞"
-            exit {$EXIT_FAILURE}
+            exit "${EXIT_FAILURE}"
         fi
     else
         echo "${red}I'm pretty lenient when it comes to names but lets stay within the means here (ㆆ_ㆆ)... run the script again T.T${reset}"
@@ -109,7 +109,7 @@ create_node_env() {
     echo "${bold}${reverse}${lime_green}Alright, starting Node.js ⇒${reset}"
     if ! npm init -y 2>> "${ERRORS_LOG_PATH}" 1>> "${POST_LOG_PATH}"; then
         write_log "ERROR" "${EXIT_CODE}" "Failed to start node / npm." "${ERRORS_LOG_PATH}"
-        exit {$EXIT_FAILURE}
+        exit "${EXIT_FAILURE}"
     fi
     echo "${reverse}Node initialized.${reset}"
     write_log "INFO" "${EXIT_CODE}" "Initialized Node environment." "${POST_LOG_PATH}"
