@@ -2,9 +2,6 @@
 .venv/
 
 # burno
-<<<<<<< HEAD
 credentials.json
 token.json
-=======
-credentials.json
->>>>>>> c2a89a0 (init: initialized burno foundation)
+
