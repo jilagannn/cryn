@@ -26,122 +26,122 @@ creds = None
 # is created automatically when the authorization flow completes for 
 # the first time.
 if os.path.exists("configs/gmail/token.json"):
-  creds = Credentials.from_authorized_user_file("configs/gmail/token.json", 
+    creds = Credentials.from_authorized_user_file("configs/gmail/token.json", 
                                                 SCOPES)
 # If there are no (valid) credentials available, let the user log in.
 if not creds or not creds.valid:
-  if creds and creds.expired and creds.refresh_token:
-    creds.refresh(Request())
-  else:
-    flow = InstalledAppFlow.from_client_secrets_file(
-        "configs/gmail/credentials.json", SCOPES
-    )
-    creds = flow.run_local_server(port=0)
-  # Save the credentials for the next run
-  with open("configs/gmail/token.json", "w") as token:
-    token.write(creds.to_json())
+    if creds and creds.expired and creds.refresh_token:
+        creds.refresh(Request())
+    else:
+        flow = InstalledAppFlow.from_client_secrets_file(
+            "configs/gmail/credentials.json", SCOPES
+        )
+        creds = flow.run_local_server(port=0)
+    # Save the credentials for the next run
+    with open("configs/gmail/token.json", "w") as token:
+        token.write(creds.to_json())
 
 service = build("gmail", "v1", credentials=creds)
 
 def menu_options() -> str:
-  MENU_OPTIONS = (f"1. Delete all mail\n"
-                  f"2. Delete all mail from category\n"
-                  f"3. Clear Spam\n"
-                  f"4. Clear Trash\n"
-                  f"5. Exit\n")
-  return print(MENU_OPTIONS)
+    MENU_OPTIONS = (f"1. Delete all mail\n"
+                    f"2. Delete all mail from category\n"
+                    f"3. Clear Spam\n"
+                    f"4. Clear Trash\n"
+                    f"5. Exit\n")
+    return print(MENU_OPTIONS)
 
 def get_user_input() -> int:
-  try:
-    user_input = int(input(f"So what do we want to do today?\n"
-                           f"Select the corresponding number: "))
-    return user_input
-  except TypeError as e:
-    print(e)
+    try:
+        user_input = int(input(f"So what do we want to do today?\n"
+                            f"Select the corresponding number: "))
+        return user_input
+    except TypeError as e:
+        print(e)
 
 def get_labels() -> None:
-  try:
-    # Call the Gmail API
-    results = service.users().labels().list(userId="me").execute()
-    labels = results.get("labels", [])
+    try:
+        # Call the Gmail API
+        results = service.users().labels().list(userId="me").execute()
+        labels = results.get("labels", [])
 
-    if not labels:
-      print("No labels found.")
-      return
-    print("Labels:")
-    for label in labels:
-      print(label["name"])
+        if not labels:
+            print("No labels found.")
+            return
+        print("Labels:")
+        for label in labels:
+            print(label["name"])
 
-  except HttpError as error:
-    print(f"An error occurred: {error}")
+    except HttpError as error:
+        print(f"An error occurred: {error}")
 
 def count_trash() -> int:
-  try:
-    trash = service.users().messages().list(userId="me", 
-                                              q="in:trash").execute()
-    trash_count = trash["resultSizeEstimate"]
-    trash_message = f"Total emails in trash (estimate): {trash_count}"
-    print(trash_message)
-  except HttpError as error:
-    print(f"An error occurred: {error}")
+    try:
+        trash = service.users().messages().list(userId="me", 
+                                                q="in:trash").execute()
+        trash_count = trash["resultSizeEstimate"]
+        trash_message = f"Total emails in trash (estimate): {trash_count}"
+        print(trash_message)
+    except HttpError as error:
+        print(f"An error occurred: {error}")
 
 def clear_trash():
-  try:
-    trash = service.users().messages().list(userId="me", 
-                                              q="in:trash").execute()
-    messages = trash.get("messages", [])
-    trash_count = trash["resultSizeEstimate"]
-    if messages:
-      print(f"There are {trash_count} emails to be deleted.")
-      user_confirmation = input(f"Are you sure you want to delete selected "
-                                f"emails? y/n: ")
-      if user_confirmation.capitalize() == "Y":
-        print("Deleting emails in Trash.")
-        for message in messages:
-          service.users().messages().delete(userId="me", 
-                                            id=message["id"]).execute()
-        print("Emails in Trash deleted!")
-    else:
-      print("Trash is empty or has been cleared! already")
-  except HttpError as error:
-    print(f"An error occurred: {error}")
+    try:
+        trash = service.users().messages().list(userId="me", 
+                                                q="in:trash").execute()
+        messages = trash.get("messages", [])
+        trash_count = trash["resultSizeEstimate"]
+        if messages:
+            print(f"There are {trash_count} emails to be deleted.")
+            user_confirmation = input(f"Are you sure you want to delete "
+                                      f"selected emails? y/n: ")
+            if user_confirmation.capitalize() == "Y":
+                print("Deleting emails in Trash.")
+                for message in messages:
+                    service.users().messages().delete(userId="me", 
+                                                      id=message["id"]).execute()
+            print("Emails in Trash deleted!")
+        else:
+            print("Trash is empty or has been cleared! already")
+    except HttpError as error:
+        print(f"An error occurred: {error}")
 
 def count_spam() -> int:
-  try:
-    spam = service.users().messages().list(userId="me", 
-                                              q="in:spam").execute()
-    spam_count = spam["resultSizeEstimate"]
-    spam_message = f"Total emails in spam (estimate): {spam_count}"
-    print(spam_message)
-  except HttpError as error:
-    print(f"An error occurred: {error}")
+    try:
+        spam = service.users().messages().list(userId="me", 
+                                                q="in:spam").execute()
+        spam_count = spam["resultSizeEstimate"]
+        spam_message = f"Total emails in spam (estimate): {spam_count}"
+        print(spam_message)
+    except HttpError as error:
+        print(f"An error occurred: {error}")
 
 def clear_spam():
-  try:
-    spam = service.users().messages().list(userId="me", 
-                                              q="in:spam").execute()
-    messages = spam.get("messages", [])
-    spam_count = spam["resultSizeEstimate"]
-    if messages:
-      print(f"There are {spam_count} emails to be deleted.")
-      user_confirmation = input(f"Are you sure you want to delete selected "
-                                f"emails? y/n: ")
-      if user_confirmation.capitalize() == "Y":
-        print("Deleting emails in Spam.")
-        for message in messages:
-          service.users().messages().delete(userId="me", 
-                                            id=message["id"]).execute()
-        print("Emails in Spam deleted!")
-    else:
-      print("Spam is empty or has been cleared! already")
-  except HttpError as error:
-    print(f"An error occurred: {error}")
+    try:
+        spam = service.users().messages().list(userId="me", 
+                                                q="in:spam").execute()
+        messages = spam.get("messages", [])
+        spam_count = spam["resultSizeEstimate"]
+        if messages:
+            print(f"There are {spam_count} emails to be deleted.")
+            user_confirmation = input(f"Are you sure you want to delete "
+                                      f"selected emails? y/n: ")
+            if user_confirmation.capitalize() == "Y":
+                print("Deleting emails in Spam.")
+                for message in messages:
+                    service.users().messages().delete(userId="me", 
+                                                      id=message["id"]).execute()
+                print("Emails in Spam deleted!")
+        else:
+            print("Spam is empty or has been cleared! already")
+    except HttpError as error:
+        print(f"An error occurred: {error}")
 
 def main():
-  count_spam()
-  clear_spam()
-  count_trash()
-  clear_trash()
+    count_spam()
+    clear_spam()
+    count_trash()
+    clear_trash()
 
 if __name__ == "__main__":
-  main()
+    main()
