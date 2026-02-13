@@ -7,35 +7,52 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+# We need full access to delete emails
+SCOPES = ["https://mail.google.com/"]
 
+# Delete messages in batches of this size (max. 1000).
+BATCH_SIZE = 500
 
-def main():
-  """Shows basic usage of the Gmail API.
-  Lists the user's Gmail labels.
-  """
-  creds = None
-  # The file token.json stores the user's access and refresh tokens, and is
-  # created automatically when the authorization flow completes for the first
-  # time.
-  if os.path.exists("configs/gmail/token.json"):
-    creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-  # If there are no (valid) credentials available, let the user log in.
-  if not creds or not creds.valid:
-    if creds and creds.expired and creds.refresh_token:
-      creds.refresh(Request())
-    else:
-      flow = InstalledAppFlow.from_client_secrets_file(
-          "configs/gmail/credentials.json", SCOPES
-      )
-      creds = flow.run_local_server(port=0)
-    # Save the credentials for the next run
-    with open("token.json", "w") as token:
-      token.write(creds.to_json())
+creds = None
+# The file token.json stores the user's access and refresh tokens, and is
+# created automatically when the authorization flow completes for the first
+# time.
+if os.path.exists("configs/gmail/token.json"):
+  creds = Credentials.from_authorized_user_file("configs/gmail/token.json", SCOPES)
+# If there are no (valid) credentials available, let the user log in.
+if not creds or not creds.valid:
+  if creds and creds.expired and creds.refresh_token:
+    creds.refresh(Request())
+  else:
+    flow = InstalledAppFlow.from_client_secrets_file(
+        "configs/gmail/credentials.json", SCOPES
+    )
+    creds = flow.run_local_server(port=0)
+  # Save the credentials for the next run
+  with open("configs/gmail/token.json", "w") as token:
+    token.write(creds.to_json())
 
+service = build("gmail", "v1", credentials=creds)
+
+def menu_options() -> str:
+  MENU_OPTIONS = (f"1. Delete all mail\n"
+                  f"2. Delete all mail from category\n"
+                  f"3. Clear Spam\n"
+                  f"4. Clear Trash\n"
+                  f"5. Exit\n")
+  return print(MENU_OPTIONS)
+
+def get_user_input() -> int:
+  try:
+    user_input = int(input(f"So what do we want to do today?\n"
+                           f"Select the corresponding number: "))
+    return user_input
+  except TypeError as e:
+    print(e)
+
+def get_labels() -> None:
   try:
     # Call the Gmail API
-    service = build("gmail", "v1", credentials=creds)
     results = service.users().labels().list(userId="me").execute()
     labels = results.get("labels", [])
 
@@ -47,9 +64,38 @@ def main():
       print(label["name"])
 
   except HttpError as error:
+    print(f"An error occurred: {error}")
+
+def count_trash():
+  try:
+    results = service.users().messages().list(userId="me", q="in:trash").execute()
+    trash_count = results["resultSizeEstimate"]
+    trash_message = f"Total emails in trash: {trash_count}"
+    print(trash_message)
+  except HttpError as error:
     # TODO(developer) - Handle errors from gmail API.
     print(f"An error occurred: {error}")
 
+def clear_trash():
+  try:
+    results = service.users().messages().list(userId="me", q="in:trash").execute()
+    messages = results.get("messages", [])
+    for message in messages:
+      service.users().messages().delete(userId="me", id=message["id"]).execute()
+    
+    if not messages:
+      print("Trash is empty / has been cleared! already")
+  except HttpError as error:
+    # TODO(developer) - Handle errors from gmail API.
+    print(f"An error occurred: {error}")
+
+
+def main():
+  # menu_options()
+  # get_user_input()
+  # get_labels()
+  count_trash()
+  clear_trash()
 
 if __name__ == "__main__":
   main()
