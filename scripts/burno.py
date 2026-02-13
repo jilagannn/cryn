@@ -75,30 +75,35 @@ def get_labels() -> None:
   except HttpError as error:
     print(f"An error occurred: {error}")
 
-def count_trash():
+def count_trash() -> int:
   try:
-    results = service.users().messages().list(userId="me", 
+    trash = service.users().messages().list(userId="me", 
                                               q="in:trash").execute()
-    trash_count = results["resultSizeEstimate"]
-    trash_message = f"Total emails in trash: {trash_count}"
+    trash_count = trash["resultSizeEstimate"]
+    trash_message = f"Total emails in trash (estimate): {trash_count}"
     print(trash_message)
   except HttpError as error:
-    # TODO(developer) - Handle errors from gmail API.
     print(f"An error occurred: {error}")
 
 def clear_trash():
   try:
-    results = service.users().messages().list(userId="me", 
+    trash = service.users().messages().list(userId="me", 
                                               q="in:trash").execute()
-    messages = results.get("messages", [])
-    for message in messages:
-      service.users().messages().delete(userId="me", 
-                                        id=message["id"]).execute()
-    
-    if not messages:
-      print("Trash is empty / has been cleared! already")
+    messages = trash.get("messages", [])
+    trash_count = trash["resultSizeEstimate"]
+    if messages:
+      print(f"There are {trash_count} emails to be deleted.")
+      user_confirmation = input(f"Are you sure you want to delete selected "
+                                f"emails? y/n: ")
+      if user_confirmation.capitalize() == "Y":
+        print("Deleting emails in Trash.")
+        for message in messages:
+          service.users().messages().delete(userId="me", 
+                                            id=message["id"]).execute()
+        print("Emails in trash deleted!")
+    else:
+      print("Trash is empty or has been cleared! already")
   except HttpError as error:
-    # TODO(developer) - Handle errors from gmail API.
     print(f"An error occurred: {error}")
 
 
