@@ -1,3 +1,12 @@
+"""This module defines the burno script.
+
+This module utilizes the gmail API to delete or trash emails in
+categories such as Promos, Updates, Social, Spam, or Trash.
+"""
+
+__author__ = "Jheyrus Ilagan"
+__version__ = "2.13.2026"
+
 import os.path
 
 from google.auth.transport.requests import Request
@@ -6,19 +15,19 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-# If modifying these scopes, delete the file token.json.
-# We need full access to delete emails
+# Scope for full access
 SCOPES = ["https://mail.google.com/"]
 
 # Delete messages in batches of this size (max. 1000).
 BATCH_SIZE = 500
 
 creds = None
-# The file token.json stores the user's access and refresh tokens, and is
-# created automatically when the authorization flow completes for the first
-# time.
+# The file token.json stores the user's access and refresh tokens, and 
+# is created automatically when the authorization flow completes for 
+# the first time.
 if os.path.exists("configs/gmail/token.json"):
-  creds = Credentials.from_authorized_user_file("configs/gmail/token.json", SCOPES)
+  creds = Credentials.from_authorized_user_file("configs/gmail/token.json", 
+                                                SCOPES)
 # If there are no (valid) credentials available, let the user log in.
 if not creds or not creds.valid:
   if creds and creds.expired and creds.refresh_token:
@@ -68,7 +77,8 @@ def get_labels() -> None:
 
 def count_trash():
   try:
-    results = service.users().messages().list(userId="me", q="in:trash").execute()
+    results = service.users().messages().list(userId="me", 
+                                              q="in:trash").execute()
     trash_count = results["resultSizeEstimate"]
     trash_message = f"Total emails in trash: {trash_count}"
     print(trash_message)
@@ -78,10 +88,12 @@ def count_trash():
 
 def clear_trash():
   try:
-    results = service.users().messages().list(userId="me", q="in:trash").execute()
+    results = service.users().messages().list(userId="me", 
+                                              q="in:trash").execute()
     messages = results.get("messages", [])
     for message in messages:
-      service.users().messages().delete(userId="me", id=message["id"]).execute()
+      service.users().messages().delete(userId="me", 
+                                        id=message["id"]).execute()
     
     if not messages:
       print("Trash is empty / has been cleared! already")
@@ -91,9 +103,6 @@ def clear_trash():
 
 
 def main():
-  # menu_options()
-  # get_user_input()
-  # get_labels()
   count_trash()
   clear_trash()
 
