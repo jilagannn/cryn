@@ -116,9 +116,30 @@ def count_spam() -> int:
   except HttpError as error:
     print(f"An error occurred: {error}")
 
+def clear_spam():
+  try:
+    spam = service.users().messages().list(userId="me", 
+                                              q="in:spam").execute()
+    messages = spam.get("messages", [])
+    spam_count = spam["resultSizeEstimate"]
+    if messages:
+      print(f"There are {spam_count} emails to be deleted.")
+      user_confirmation = input(f"Are you sure you want to delete selected "
+                                f"emails? y/n: ")
+      if user_confirmation.capitalize() == "Y":
+        print("Deleting emails in Spam.")
+        for message in messages:
+          service.users().messages().delete(userId="me", 
+                                            id=message["id"]).execute()
+        print("Emails in Spam deleted!")
+    else:
+      print("Spam is empty or has been cleared! already")
+  except HttpError as error:
+    print(f"An error occurred: {error}")
 
 def main():
   count_spam()
+  clear_spam()
   count_trash()
   clear_trash()
 
