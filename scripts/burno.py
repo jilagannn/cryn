@@ -120,6 +120,7 @@ def clear_spam():
     try:
         spam = (service.users().messages()
                 .list(userId="me", q="in:spam").execute())
+        
         messages = spam.get("messages", [])
         spam_count = spam["resultSizeEstimate"]
         if messages:
@@ -137,7 +138,44 @@ def clear_spam():
     except HttpError as error:
         print(f"An error occurred: {error}")
 
-def select_category():
+def delete_category_emails(name, query):
+    try:
+        all_messages = []
+        results = (service.users().messages()
+                .list(userId="me", q=query, maxResults=BATCH_SIZE).execute())
+        messages = results.get("messages", [])
+        token = results["nextPageToken"]
+
+        for i in all_messages:
+            all_messages.append(messages)
+
+        while "nextPageToken" in results:
+            results = (service.users().messages()
+                    .list(userId="me", q=query, 
+                            maxResults=BATCH_SIZE, pageToken=token).execute())
+            for i in all_messages:
+                all_messages.append(messages)
+
+        if len(all_messages) == 0:
+            print(f"Category {name} is empty.")
+
+        else:
+            message_count = len(all_messages)
+            print(f"There are {message_count} in {name}")
+            user_confirmation = input(f"Are you sure you want to delete "
+                                      f"selected emails? y/n: ")
+            if user_confirmation.capitalize() == "Y":
+                print(f"Deleting emails in {name}.")
+                for i in all_messages:
+                    (service.users().messages()
+                     .delete(userId="me", id=i["id"]).execute())
+                print("Emails deleted!")
+
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+
+
+def select_category(): 
     CATEGORY_OPTIONS = (f"1. Promos\n"
                     f"2. Social\n"
                     f"3. Update\n"
@@ -214,12 +252,9 @@ def select_category():
     except (HttpError, TypeError) as error:
         print(f"An error occurred: {error}")
 
-
-
-
 def main():
     get_labels()
-    select_category()
+    # select_category()
     count_spam()
     clear_spam()
     count_trash()
