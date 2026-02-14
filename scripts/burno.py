@@ -100,7 +100,7 @@ def clear_trash():
                 for message in messages:
                     (service.users().messages()
                      .delete(userId="me", id=message["id"]).execute())
-            print("Emails in Trash deleted!")
+                print("Emails in Trash deleted!")
         else:
             print("Trash is empty or has been cleared! already")
     except HttpError as error:
@@ -138,23 +138,21 @@ def clear_spam():
     except HttpError as error:
         print(f"An error occurred: {error}")
 
-def delete_category_emails(name, query):
+def trash_category_emails(name, query):
     try:
         all_messages = []
         results = (service.users().messages()
                 .list(userId="me", q=query, maxResults=BATCH_SIZE).execute())
         messages = results.get("messages", [])
-        token = results["nextPageToken"]
+        token = results.get("nextPageToken")
 
-        for i in all_messages:
-            all_messages.append(messages)
+        all_messages.extend(messages)
 
         while "nextPageToken" in results:
             results = (service.users().messages()
                     .list(userId="me", q=query, 
                             maxResults=BATCH_SIZE, pageToken=token).execute())
-            for i in all_messages:
-                all_messages.append(messages)
+            all_messages.extend(messages)
 
         if len(all_messages) == 0:
             print(f"Category {name} is empty.")
@@ -168,14 +166,21 @@ def delete_category_emails(name, query):
                 print(f"Deleting emails in {name}.")
                 for i in all_messages:
                     (service.users().messages()
-                     .delete(userId="me", id=i["id"]).execute())
+                     .trash(userId="me", id=i["id"]).execute())
                 print("Emails deleted!")
 
     except HttpError as error:
         print(f"An error occurred: {error}")
 
 
-def select_category(): 
+def select_category():
+    CATEGORIES = [
+        {"name": "Promos", "query": "category:promotions AND in:inbox"},
+        {"name": "Social", "query": "category:social AND in:inbox"},
+        {"name": "Updates", "query": "category:updates AND in:inbox"}
+    ]
+
+    
     CATEGORY_OPTIONS = (f"1. Promos\n"
                     f"2. Social\n"
                     f"3. Update\n"
@@ -185,76 +190,30 @@ def select_category():
         user_choice = int(input("Please select a category: "))
 
         if user_choice == 1:
-            promos = (service.users().messages()
-                    .list(userId="me", q="category:promotions").execute())
-            promos_messages = promos.get("messages", [])
-            print(len(promos_messages))
-            promos_estimate_count = promos["resultSizeEstimate"]
-            if promos_messages:
-                print(f"There are {promos_estimate_count} in promos to be deleted.")
-                user_confirmation = input(f"Are you sure you want to delete "
-                                        f"selected emails? y/n: ")
-                if user_confirmation.capitalize() == "Y":
-                    print("Deleting emails in Promos.")
-                    for message in promos_messages:
-                        (service.users().messages()
-                        .delete(userId="me", id=message["id"]).execute())
-                    print("Emails in Promos deleted!")
-            else:
-                print("Promos is empty or has been cleared! already")
+            trash_category_emails(CATEGORIES[0]["name"], CATEGORIES[0]["query"])
+        elif user_choice == 2:
+            trash_category_emails(CATEGORIES[1]["name"], CATEGORIES[1]["query"])
+        elif user_choice == 3:
+            print(f"Updates typically contain some important messages."
+                  f"It is highly advised you move/save said messages before proceeding.")
+            
+            confirmation = input("Would you like to proceed? y/n: ")
 
-        if user_choice == 2:
-            socials = (service.users().messages()
-                    .list(userId="me", q="category:social").execute())
-            socials_messages = socials.get("messages", [])
-            socials_estimate_count = socials["resultSizeEstimate"]
-            if socials_messages:
-                print(f"There are {socials_estimate_count} in socials to be "
-                      f"deleted.")
-                user_confirmation = input(f"Are you sure you want to delete "
-                                        f"selected emails? y/n: ")
-                if user_confirmation.capitalize() == "Y":
-                    print("Deleting emails in Socials.")
-                    for message in socials_messages:
-                        (service.users().messages()
-                        .delete(userId="me", id=message["id"]).execute())
-                    print("Emails in Socials deleted!")
+            if confirmation.capitalize() == "Y":
+                trash_category_emails(CATEGORIES[2]["name"], CATEGORIES[2]["query"])
             else:
-                print("Socials is empty or has been cleared! already")
-
-        if user_choice == 3:
-            updates = (service.users().messages()
-                    .list(userId="me", q="category:updates AND is:unread").execute())
-            updates_messages = updates.get("messages", [])
-            print(len(updates_messages))
-            updates_estimate_count = updates["resultSizeEstimate"]
-            if updates_messages:
-                print(f"There are {updates_estimate_count} in updates to be "
-                      f"deleted.")
-                user_confirmation = input(f"Are you sure you want to delete "
-                                        f"selected emails? y/n: ")
-                if user_confirmation.capitalize() == "Y":
-                    print("Deleting emails in Socials.")
-                    for message in updates_messages:
-                        (service.users().messages()
-                        .delete(userId="me", id=message["id"]).execute())
-                    print("Emails in Updates deleted!")
-            else:
-                print("Updates is empty or has been cleared! already")
-
-        if user_choice == 4:
-            print("Returning to main selection!")
-            return
-        
+                print("Returning to category select.")
+        elif user_choice == 4:
+            print("Returning to main selection.")
         else:
-            print("Please select a valid category")
+            print("Choose a valid option! T.T")
 
     except (HttpError, TypeError) as error:
         print(f"An error occurred: {error}")
 
 def main():
-    get_labels()
-    # select_category()
+    # get_labels()
+    select_category()
     count_spam()
     clear_spam()
     count_trash()
