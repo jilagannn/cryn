@@ -60,50 +60,27 @@ def get_user_input() -> int:
     except (TypeError, ValueError) as e:
         print(e)
 
-def get_labels() -> None:
-    try:
-        # Call the Gmail API
-        results = service.users().labels().list(userId="me").execute()
-        labels = results.get("labels", [])
-
-        if not labels:
-            print("No labels found.")
-            return
-        print("Labels:")
-        for label in labels:
-            print(label["name"])
-
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-
-def count_trash() -> int:
-    try:
-        trash = (service.users().messages()
-                 .list(userId="me", q="in:trash").execute())
-        trash_count = trash["resultSizeEstimate"]
-        trash_message = f"Total emails in trash (estimate): {trash_count}"
-        print(trash_message)
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-
 def clear_trash():
     try:
-        trash = (service.users().messages()
-                 .list(userId="me", q="in:trash").execute())
-        messages = trash.get("messages", [])
-        trash_count = trash["resultSizeEstimate"]
-        if messages:
-            print(f"There are {trash_count} emails to be deleted.")
-            user_confirmation = input(f"Are you sure you want to delete "
-                                      f"selected emails? y/n: ")
-            if user_confirmation.capitalize() == "Y":
-                print("Deleting emails in Trash.")
-                for message in messages:
-                    (service.users().messages()
-                     .delete(userId="me", id=message["id"]).execute())
-                print("Emails in Trash deleted!")
+        query = "in:trash"
+        all_messages = []
+        display_next_page(all_messages, query)
+
+        if len(all_messages) == 0:
+                print(f"Categories are empty.")
+
         else:
-            print("Trash is empty or has been cleared! already")
+            message_count = len(all_messages)
+            print(f"There are {message_count} in Trash")
+            user_confirmation = input(f"Are you sure you want to delete "
+                                    f"selected emails? y/n: ")
+            if user_confirmation.capitalize() == "Y":
+                print(f"Deleting emails in Trash.")
+                for i in all_messages:
+                    (service.users().messages()
+                    .delete(userId="me", id=i["id"]).execute())
+                print("Emails in Trash deleted!")
+
     except HttpError as error:
         print(f"An error occurred: {error}")
 
@@ -263,8 +240,6 @@ def main():
             print("Please select a valid option! T.T")
         time.sleep(3)
         os.system('cls' if os.name == 'nt' else 'clear')
-
-
 
 
 if __name__ == "__main__":
