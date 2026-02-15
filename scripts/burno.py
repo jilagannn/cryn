@@ -138,21 +138,23 @@ def clear_spam():
     except HttpError as error:
         print(f"An error occurred: {error}")
 
+def display_next_page(all_messages, query):
+    results = (service.users().messages()
+            .list(userId="me", q=query, maxResults=BATCH_SIZE).execute())
+    messages = results.get("messages", [])
+    token = results.get("nextPageToken")
+    all_messages.extend(messages)
+    while "nextPageToken" in results:
+                results = (service.users().messages()
+                        .list(userId="me", q=query, 
+                                maxResults=BATCH_SIZE, pageToken=token).execute())
+                all_messages.extend(messages)
+
+
 def trash_category_emails(name, query):
     try:
         all_messages = []
-        results = (service.users().messages()
-                .list(userId="me", q=query, maxResults=BATCH_SIZE).execute())
-        messages = results.get("messages", [])
-        token = results.get("nextPageToken")
-
-        all_messages.extend(messages)
-
-        while "nextPageToken" in results:
-            results = (service.users().messages()
-                    .list(userId="me", q=query, 
-                            maxResults=BATCH_SIZE, pageToken=token).execute())
-            all_messages.extend(messages)
+        display_next_page(all_messages, query)
 
         if len(all_messages) == 0:
             print(f"Category {name} is empty.")
@@ -175,12 +177,11 @@ def trash_category_emails(name, query):
 
 def select_category():
     CATEGORIES = [
-        {"name": "Promos", "query": "category:promotions AND in:inbox"},
+        {"name": "Promos", "query": "category:promotions"},
         {"name": "Social", "query": "category:social AND in:inbox"},
         {"name": "Updates", "query": "category:updates AND in:inbox"}
     ]
 
-    
     CATEGORY_OPTIONS = (f"1. Promos\n"
                     f"2. Social\n"
                     f"3. Update\n"
