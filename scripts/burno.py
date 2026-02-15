@@ -63,20 +63,20 @@ def get_user_input() -> int:
 def clear_trash():
     try:
         query = "in:trash"
-        all_messages = []
-        display_next_page(all_messages, query)
+        trash_messages = []
+        display_next_page(trash_messages, query)
 
-        if len(all_messages) == 0:
-                print(f"Categories are empty.")
+        if len(trash_messages) == 0:
+                print(f"Trash is empty.")
 
         else:
-            message_count = len(all_messages)
+            message_count = len(trash_messages)
             print(f"There are {message_count} in Trash")
             user_confirmation = input(f"Are you sure you want to delete "
                                     f"selected emails? y/n: ")
             if user_confirmation.capitalize() == "Y":
                 print(f"Deleting emails in Trash.")
-                for i in all_messages:
+                for i in trash_messages:
                     (service.users().messages()
                     .delete(userId="me", id=i["id"]).execute())
                 print("Emails in Trash deleted!")
@@ -87,20 +87,20 @@ def clear_trash():
 def clear_spam():
     try:
         query = "in:spam"
-        all_messages = []
-        display_next_page(all_messages, query)
+        spam_messages = []
+        display_next_page(spam_messages, query)
 
-        if len(all_messages) == 0:
+        if len(spam_messages) == 0:
                 print(f"Categories are empty.")
 
         else:
-            message_count = len(all_messages)
+            message_count = len(spam_messages)
             print(f"There are {message_count} in Spam")
             user_confirmation = input(f"Are you sure you want to delete "
                                     f"selected emails? y/n: ")
             if user_confirmation.capitalize() == "Y":
                 print(f"Deleting emails in Spam.")
-                for i in all_messages:
+                for i in spam_messages:
                     (service.users().messages()
                     .delete(userId="me", id=i["id"]).execute())
                 print("Emails in Spam deleted!")
@@ -147,20 +147,20 @@ def trash_categories():
 
 def trash_emails_in_category(name, query):
     try:
-        all_messages = []
-        display_next_page(all_messages, query)
+        selected_category_messages = []
+        display_next_page(selected_category_messages, query)
 
-        if len(all_messages) == 0:
+        if len(selected_category_messages) == 0:
             print(f"Category {name} is empty.")
 
         else:
-            message_count = len(all_messages)
+            message_count = len(selected_category_messages)
             print(f"There are {message_count} in {name}")
             user_confirmation = input(f"Are you sure you want to delete "
                                       f"selected emails? y/n: ")
             if user_confirmation.capitalize() == "Y":
                 print(f"Deleting emails in {name}.")
-                for i in all_messages:
+                for i in selected_category_messages:
                     (service.users().messages()
                      .trash(userId="me", id=i["id"]).execute())
                 print("Emails deleted!")
@@ -211,6 +211,7 @@ def main():
     while user_input != 5:
         menu_options()
         user_input = get_user_input()
+
         if user_input == 1:
             trash_categories()
 
@@ -218,11 +219,9 @@ def main():
             select_category()
 
         elif user_input == 3:
-            count_spam()
             clear_spam()
 
         elif user_input == 4:        
-            count_trash()
             clear_trash()
 
         elif user_input == 5:
@@ -230,6 +229,7 @@ def main():
             
         else:
             print("Please select a valid option! T.T")
+
         time.sleep(3)
         os.system('cls' if os.name == 'nt' else 'clear')
 
