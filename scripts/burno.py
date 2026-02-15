@@ -7,7 +7,8 @@ categories such as Promos, Updates, Social, Spam, or Trash.
 __author__ = "Jheyrus Ilagan"
 __version__ = "2.13.2026"
 
-import os.path
+import os
+import time
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -56,7 +57,7 @@ def get_user_input() -> int:
         user_input = int(input(f"So what do we want to do today?\n"
                             f"Select the corresponding number: "))
         return user_input
-    except TypeError as e:
+    except (TypeError, ValueError) as e:
         print(e)
 
 def get_labels() -> None:
@@ -237,13 +238,34 @@ def select_category():
         print(f"An error occurred: {error}")
 
 def main():
-    # get_labels()
-    trash_categories()
-    select_category()
-    count_spam()
-    clear_spam()
-    count_trash()
-    clear_trash()
+    user_input = ""
+    while user_input != 5:
+        menu_options()
+        user_input = get_user_input()
+        if user_input == 1:
+            trash_categories()
+
+        elif user_input == 2:
+            select_category()
+
+        elif user_input == 3:
+            count_spam()
+            clear_spam()
+
+        elif user_input == 4:        
+            count_trash()
+            clear_trash()
+
+        elif user_input == 5:
+            print("Bye bye!")
+            
+        else:
+            print("Please select a valid option! T.T")
+        time.sleep(3)
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+
+
 
 if __name__ == "__main__":
     main()
