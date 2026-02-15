@@ -44,13 +44,13 @@ if not creds or not creds.valid:
 
 service = build("gmail", "v1", credentials=creds)
 
-def menu_options() -> str:
+def menu_options() -> None:
     MENU_OPTIONS = (f"1. Delete all mail (Promos, Socials - excluding Updates)\n"
                     f"2. Delete all mail from category\n"
                     f"3. Clear Spam\n"
                     f"4. Clear Trash\n"
                     f"5. Exit\n")
-    return print(MENU_OPTIONS)
+    print(MENU_OPTIONS)
 
 def get_user_input() -> int:
     try:
@@ -63,7 +63,7 @@ def get_user_input() -> int:
         print("Restarting operations.")
 
 def user_confirmation(message):
-    user_confirmation = ""
+    user_confirmation = "6767"
     while user_confirmation != "n" and user_confirmation != "y":
         user_confirmation = input(f"{message}\nEnter y/n: ").lower()
         if user_confirmation != "n" and user_confirmation != "y":
@@ -212,7 +212,7 @@ def select_category():
                     f"4. Exit\n")
     print(CATEGORY_OPTIONS)
     try:
-        user_choice = ""
+        user_choice = "6767"
         while user_choice != 4:
             user_choice = int(input("Please select a category: "))
 
@@ -224,7 +224,7 @@ def select_category():
                 print(f"Updates typically contain some important messages."
                         f"It is highly advised you move/save said messages before proceeding.")
                 
-                update_prompt = user_confirmation("Would you like to proceed? y/n: ")
+                update_prompt = user_confirmation("Would you like to proceed?")
 
                 if update_prompt == "y":
                     trash_emails_in_category(CATEGORIES[2]["name"], CATEGORIES[2]["query"])
@@ -242,7 +242,7 @@ def select_category():
 
 def main():
     try:
-        user_input = ""
+        user_input = "6767"
         while user_input != 5:
             menu_options()
             user_input = get_user_input()
