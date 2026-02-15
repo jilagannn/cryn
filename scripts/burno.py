@@ -44,7 +44,7 @@ if not creds or not creds.valid:
 service = build("gmail", "v1", credentials=creds)
 
 def menu_options() -> str:
-    MENU_OPTIONS = (f"1. Delete all mail\n"
+    MENU_OPTIONS = (f"1. Delete all mail (Promos, Socials - excluding Updates)\n"
                     f"2. Delete all mail from category\n"
                     f"3. Clear Spam\n"
                     f"4. Clear Trash\n"
@@ -145,13 +145,37 @@ def display_next_page(all_messages, query):
     token = results.get("nextPageToken")
     all_messages.extend(messages)
     while "nextPageToken" in results:
-                results = (service.users().messages()
-                        .list(userId="me", q=query, 
-                                maxResults=BATCH_SIZE, pageToken=token).execute())
-                all_messages.extend(messages)
+        results = (service.users().messages()
+                   .list(userId="me", q=query, 
+                         maxResults=BATCH_SIZE, pageToken=token).execute())
+        all_messages.extend(messages)
 
+def trash_categories():
+    try:
+        query = "category:promotions OR category:social"
+        all_messages = []
+        display_next_page(all_messages, query)
 
-def trash_category_emails(name, query):
+        if len(all_messages) == 0:
+            print(f"Categories are empty.")
+
+        else:
+            message_count = len(all_messages)
+            print(f"There are {message_count} in promos and social")
+            user_confirmation = input(f"Are you sure you want to trash "
+                                      f"selected emails? y/n: ")
+            if user_confirmation.capitalize() == "Y":
+                print(f"Trashing emails in promos and socials.")
+                for i in all_messages:
+                    (service.users().messages()
+                     .trash(userId="me", id=i["id"]).execute())
+                print("Emails trashed!")
+
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+    
+
+def trash_emails_in_category(name, query):
     try:
         all_messages = []
         display_next_page(all_messages, query)
@@ -178,7 +202,7 @@ def trash_category_emails(name, query):
 def select_category():
     CATEGORIES = [
         {"name": "Promos", "query": "category:promotions"},
-        {"name": "Social", "query": "category:social AND in:inbox"},
+        {"name": "Social", "query": "category:social"},
         {"name": "Updates", "query": "category:updates AND in:inbox"}
     ]
 
@@ -191,9 +215,9 @@ def select_category():
         user_choice = int(input("Please select a category: "))
 
         if user_choice == 1:
-            trash_category_emails(CATEGORIES[0]["name"], CATEGORIES[0]["query"])
+            trash_emails_in_category(CATEGORIES[0]["name"], CATEGORIES[0]["query"])
         elif user_choice == 2:
-            trash_category_emails(CATEGORIES[1]["name"], CATEGORIES[1]["query"])
+            trash_emails_in_category(CATEGORIES[1]["name"], CATEGORIES[1]["query"])
         elif user_choice == 3:
             print(f"Updates typically contain some important messages."
                   f"It is highly advised you move/save said messages before proceeding.")
@@ -201,7 +225,7 @@ def select_category():
             confirmation = input("Would you like to proceed? y/n: ")
 
             if confirmation.capitalize() == "Y":
-                trash_category_emails(CATEGORIES[2]["name"], CATEGORIES[2]["query"])
+                trash_emails_in_category(CATEGORIES[2]["name"], CATEGORIES[2]["query"])
             else:
                 print("Returning to category select.")
         elif user_choice == 4:
@@ -214,6 +238,7 @@ def select_category():
 
 def main():
     # get_labels()
+    trash_categories()
     select_category()
     count_spam()
     clear_spam()
