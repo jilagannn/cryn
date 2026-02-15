@@ -58,55 +58,18 @@ def get_user_input() -> int:
                             f"Select the corresponding number: "))
         return user_input
     except (TypeError, ValueError) as e:
-        print(e)
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"An error occurred: {e}")
+        print("Restarting operations.")
 
-def clear_trash():
-    try:
-        query = "in:trash"
-        trash_messages = []
-        display_next_page(trash_messages, query)
+def user_confirmation(message):
+    user_confirmation = ""
+    while user_confirmation != "n" and user_confirmation != "y":
+        user_confirmation = input(f"{message}\nEnter y/n: ").lower()
+        if user_confirmation != "n" and user_confirmation != "y":
+            print("Please enter y for yes or n for no! >:(")
 
-        if len(trash_messages) == 0:
-                print(f"Trash is empty.")
-
-        else:
-            message_count = len(trash_messages)
-            print(f"There are {message_count} in Trash")
-            user_confirmation = input(f"Are you sure you want to delete "
-                                    f"selected emails? y/n: ")
-            if user_confirmation.capitalize() == "Y":
-                print(f"Deleting emails in Trash.")
-                for i in trash_messages:
-                    (service.users().messages()
-                    .delete(userId="me", id=i["id"]).execute())
-                print("Emails in Trash deleted!")
-
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-
-def clear_spam():
-    try:
-        query = "in:spam"
-        spam_messages = []
-        display_next_page(spam_messages, query)
-
-        if len(spam_messages) == 0:
-                print(f"Categories are empty.")
-
-        else:
-            message_count = len(spam_messages)
-            print(f"There are {message_count} in Spam")
-            user_confirmation = input(f"Are you sure you want to delete "
-                                    f"selected emails? y/n: ")
-            if user_confirmation.capitalize() == "Y":
-                print(f"Deleting emails in Spam.")
-                for i in spam_messages:
-                    (service.users().messages()
-                    .delete(userId="me", id=i["id"]).execute())
-                print("Emails in Spam deleted!")
-
-    except HttpError as error:
-        print(f"An error occurred: {error}")
+    return user_confirmation
 
 def display_next_page(all_messages, query):
     results = (service.users().messages()
@@ -120,6 +83,64 @@ def display_next_page(all_messages, query):
                          maxResults=BATCH_SIZE, pageToken=token).execute())
         all_messages.extend(messages)
 
+def clear_trash():
+    try:
+        query = "in:trash"
+        trash_messages = []
+        display_next_page(trash_messages, query)
+
+        if len(trash_messages) == 0:
+            print(f"Trash is empty.")
+            print("Returning to selection!")
+
+        else:
+            message_count = len(trash_messages)
+            print(f"There are {message_count} in Trash")
+            user_choice = user_confirmation(f"Are you sure you want to delete "
+                                            f"emails in trash?")
+            if user_choice == "y":
+                print(f"Deleting emails in Trash.")
+                for i in trash_messages:
+                    (service.users().messages()
+                    .delete(userId="me", id=i["id"]).execute())
+                print("Emails in Trash deleted!")
+            else:
+                print("Returning to selection.")
+
+    except (HttpError, TypeError, ValueError) as error:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"An error occurred: {error}")
+        print("Restarting operations.")
+
+def clear_spam():
+    try:
+        query = "in:spam"
+        spam_messages = []
+        display_next_page(spam_messages, query)
+
+        if len(spam_messages) == 0:
+            print("Spam is empty.")
+            print("Returning to selection!")
+
+        else:
+            message_count = len(spam_messages)
+            print(f"There are {message_count} in Spam")
+            user_choice = user_confirmation(f"Are you sure you want to delete "
+                                            f"emails in spam?")
+            if user_choice == "y":
+                print(f"Deleting emails in Spam.")
+                for i in spam_messages:
+                    (service.users().messages()
+                    .delete(userId="me", id=i["id"]).execute())
+                print("Emails in Spam deleted!")
+            else:
+                print("Returning to selection.")
+
+    except (HttpError, TypeError, ValueError) as error:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"An error occurred: {error}")
+        print("Restarting operations.")
+
 def trash_categories():
     try:
         query = "category:promotions OR category:social"
@@ -127,22 +148,27 @@ def trash_categories():
         display_next_page(all_messages, query)
 
         if len(all_messages) == 0:
-            print(f"Categories are empty.")
+            print("Categories are empty.")
+            print("Returning to selection!")
 
         else:
             message_count = len(all_messages)
             print(f"There are {message_count} in promos and social")
-            user_confirmation = input(f"Are you sure you want to trash "
-                                      f"selected emails? y/n: ")
-            if user_confirmation.capitalize() == "Y":
+            user_choice = user_confirmation(f"Are you sure you want to delete "
+                                            f"emails in selected categories?")
+            if user_choice == "y":
                 print(f"Trashing emails in promos and socials.")
                 for i in all_messages:
                     (service.users().messages()
                      .trash(userId="me", id=i["id"]).execute())
                 print("Emails trashed!")
+            else:
+                print("Returning to selection.")
 
-    except HttpError as error:
+    except (HttpError, TypeError, ValueError) as error:
+        os.system('cls' if os.name == 'nt' else 'clear')
         print(f"An error occurred: {error}")
+        print("Restarting operations.")
     
 
 def trash_emails_in_category(name, query):
@@ -152,22 +178,26 @@ def trash_emails_in_category(name, query):
 
         if len(selected_category_messages) == 0:
             print(f"Category {name} is empty.")
+            print("Returning to selection!")
 
         else:
             message_count = len(selected_category_messages)
             print(f"There are {message_count} in {name}")
-            user_confirmation = input(f"Are you sure you want to delete "
-                                      f"selected emails? y/n: ")
-            if user_confirmation.capitalize() == "Y":
+            user_choice = user_confirmation(f"Are you sure you want to delete "
+                                            f"emails in {name}?")
+            if user_choice == "y":
                 print(f"Deleting emails in {name}.")
                 for i in selected_category_messages:
                     (service.users().messages()
                      .trash(userId="me", id=i["id"]).execute())
-                print("Emails deleted!")
+                print(f"Emails in {name} trashed!")
+            else:
+                print("Returning to selection.")
 
-    except HttpError as error:
+    except (HttpError, TypeError, ValueError) as error:
+        os.system('cls' if os.name == 'nt' else 'clear')
         print(f"An error occurred: {error}")
-
+        print("Restarting operations.")
 
 def select_category():
     CATEGORIES = [
@@ -176,62 +206,72 @@ def select_category():
         {"name": "Updates", "query": "category:updates AND in:inbox"}
     ]
 
-    CATEGORY_OPTIONS = (f"1. Promos\n"
+    CATEGORY_OPTIONS = (f"\n1. Promos\n"
                     f"2. Social\n"
                     f"3. Update\n"
                     f"4. Exit\n")
     print(CATEGORY_OPTIONS)
     try:
-        user_choice = int(input("Please select a category: "))
+        user_choice = ""
+        while user_choice != 4:
+            user_choice = int(input("Please select a category: "))
 
-        if user_choice == 1:
-            trash_emails_in_category(CATEGORIES[0]["name"], CATEGORIES[0]["query"])
-        elif user_choice == 2:
-            trash_emails_in_category(CATEGORIES[1]["name"], CATEGORIES[1]["query"])
-        elif user_choice == 3:
-            print(f"Updates typically contain some important messages."
-                  f"It is highly advised you move/save said messages before proceeding.")
-            
-            confirmation = input("Would you like to proceed? y/n: ")
+            if user_choice == 1:
+                trash_emails_in_category(CATEGORIES[0]["name"], CATEGORIES[0]["query"])
+            elif user_choice == 2:
+                trash_emails_in_category(CATEGORIES[1]["name"], CATEGORIES[1]["query"])
+            elif user_choice == 3:
+                print(f"Updates typically contain some important messages."
+                        f"It is highly advised you move/save said messages before proceeding.")
+                
+                update_prompt = user_confirmation("Would you like to proceed? y/n: ")
 
-            if confirmation.capitalize() == "Y":
-                trash_emails_in_category(CATEGORIES[2]["name"], CATEGORIES[2]["query"])
+                if update_prompt == "y":
+                    trash_emails_in_category(CATEGORIES[2]["name"], CATEGORIES[2]["query"])
+                else:
+                    print("Returning to category select.")
+            elif user_choice == 4:
+                print("Returning to main selection.")
             else:
-                print("Returning to category select.")
-        elif user_choice == 4:
-            print("Returning to main selection.")
-        else:
-            print("Choose a valid option! T.T")
+                print("Choose a valid option! T.T")
 
-    except (HttpError, TypeError) as error:
+    except (HttpError, TypeError, ValueError) as error:
+        os.system('cls' if os.name == 'nt' else 'clear')
         print(f"An error occurred: {error}")
+        print("Restarting operations.")
 
 def main():
-    user_input = ""
-    while user_input != 5:
-        menu_options()
-        user_input = get_user_input()
+    try:
+        user_input = ""
+        while user_input != 5:
+            menu_options()
+            user_input = get_user_input()
 
-        if user_input == 1:
-            trash_categories()
+            if user_input == 1:
+                trash_categories()
 
-        elif user_input == 2:
-            select_category()
+            elif user_input == 2:
+                select_category()
 
-        elif user_input == 3:
-            clear_spam()
+            elif user_input == 3:
+                clear_spam()
 
-        elif user_input == 4:        
-            clear_trash()
+            elif user_input == 4:        
+                clear_trash()
 
-        elif user_input == 5:
-            print("Bye bye!")
-            
-        else:
-            print("Please select a valid option! T.T")
+            elif user_input == 5:
+                print("Bye bye!")
+                
+            else:
+                print("Please select a valid option! T.T")
 
-        time.sleep(3)
+            time.sleep(3)
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+    except (HttpError, TypeError, ValueError) as error:
         os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"An error occurred: {error}")
+        print("Restarting operations.")
 
 
 if __name__ == "__main__":
