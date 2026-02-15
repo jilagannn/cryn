@@ -75,13 +75,14 @@ def display_next_page(all_messages, query):
     results = (service.users().messages()
             .list(userId="me", q=query, maxResults=BATCH_SIZE).execute())
     messages = results.get("messages", [])
-    token = results.get("nextPageToken")
     all_messages.extend(messages)
     while "nextPageToken" in results:
         results = (service.users().messages()
-                   .list(userId="me", q=query, 
-                         maxResults=BATCH_SIZE, pageToken=token).execute())
-        all_messages.extend(messages)
+                   .list(userId="me", 
+                         q=query, 
+                         maxResults=BATCH_SIZE, 
+                         pageToken=results.get("nextPageToken")).execute())
+        all_messages.extend(results.get("messages", []))
 
 def clear_trash():
     try:
