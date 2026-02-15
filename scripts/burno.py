@@ -45,6 +45,8 @@ if not creds or not creds.valid:
 service = build("gmail", "v1", credentials=creds)
 
 def menu_options() -> None:
+    """Prints out menu options for the user."""
+
     MENU_OPTIONS = (f"1. Delete all mail (Promos, Socials - excluding Updates)\n"
                     f"2. Delete all mail from category\n"
                     f"3. Clear Spam\n"
@@ -53,6 +55,12 @@ def menu_options() -> None:
     print(MENU_OPTIONS)
 
 def get_user_input() -> int:
+    """Acquires the user's input for menu option selection.
+
+    Returns:
+        int: The selected user input for the menu options
+    """
+
     try:
         user_input = int(input(f"So what do we want to do today?\n"
                             f"Select the corresponding number: "))
@@ -62,7 +70,16 @@ def get_user_input() -> int:
         print(f"An error occurred: {e}")
         print("Restarting operations.")
 
-def user_confirmation(message):
+def user_confirmation(message: str) -> str:
+    """Prompts the user for confirmation.
+
+    Args:
+        message *str): The message prompt for the operation.
+
+    Returns:
+        str: The response of the user being yes or no.
+    """
+
     user_confirmation = "6767"
     while user_confirmation != "n" and user_confirmation != "y":
         user_confirmation = input(f"{message}\nEnter y/n: ").lower()
@@ -71,7 +88,15 @@ def user_confirmation(message):
 
     return user_confirmation
 
-def display_next_page(all_messages, query):
+def display_next_page(all_messages, query) -> None:
+    """Displays the next page of messages from the api response.
+
+    Args:
+        all_messages (list): The list containing all the messages of 
+            selected category.
+        query (str): The constructed query for selecting a category.
+    """
+
     results = (service.users().messages()
             .list(userId="me", q=query, maxResults=BATCH_SIZE).execute())
     messages = results.get("messages", [])
@@ -84,7 +109,14 @@ def display_next_page(all_messages, query):
                          pageToken=results.get("nextPageToken")).execute())
         all_messages.extend(results.get("messages", []))
 
-def clear_trash():
+def clear_trash() -> None:
+    """Clears the emails in the trash category.
+
+    This function acquires the emails in the trash category, prompts
+    the user if they want to delete the emails, and deletes the emails
+    if confirmed. Process ends if there are no emails acquired.
+    """
+
     try:
         query = "in:trash"
         trash_messages = []
@@ -113,7 +145,14 @@ def clear_trash():
         print(f"An error occurred: {error}")
         print("Restarting operations.")
 
-def clear_spam():
+def clear_spam() -> None:
+    """Clears the emails in the spam category.
+
+    This function acquires the emails in the spam category, prompts
+    the user if they want to delete the emails, and deletes the emails
+    if confirmed. Process ends if there are no emails acquired.
+    """
+
     try:
         query = "in:spam"
         spam_messages = []
@@ -142,7 +181,15 @@ def clear_spam():
         print(f"An error occurred: {error}")
         print("Restarting operations.")
 
-def trash_categories():
+def trash_categories() -> None:
+    """Clears the emails in both the promotions and social categories.
+
+    This function acquires the emails the promotions and social 
+    categories, prompts the user if they want to trash the emails, and 
+    trashes the emails if confirmed. Process ends if there are no 
+    emails acquired.
+    """
+
     try:
         query = "category:promotions OR category:social"
         all_messages = []
@@ -170,9 +217,20 @@ def trash_categories():
         os.system('cls' if os.name == 'nt' else 'clear')
         print(f"An error occurred: {error}")
         print("Restarting operations.")
-    
 
-def trash_emails_in_category(name, query):
+
+def trash_emails_in_category(name, query) -> None:
+    """Clears the emails in a selected category.
+
+    This function acquires the emails of the selected category, prompts 
+    the user if they want to trash the emails, and trashes the emails 
+    if confirmed. Process ends if there are no emails acquired.
+
+    Args:
+        name (str): The name of the category.
+        query (str): The constructed query for the category.
+    """
+
     try:
         selected_category_messages = []
         display_next_page(selected_category_messages, query)
@@ -200,7 +258,14 @@ def trash_emails_in_category(name, query):
         print(f"An error occurred: {error}")
         print("Restarting operations.")
 
-def select_category():
+def select_category() -> None:
+    """Main logic for selecting and trashing a category of emails.
+
+    This function prompts the user and compares the input to a list of
+    dictionaries, invoking trash_emails_in_category for each respective
+    input.
+    """
+
     CATEGORIES = [
         {"name": "Promos", "query": "category:promotions"},
         {"name": "Social", "query": "category:social"},
@@ -224,7 +289,7 @@ def select_category():
             elif user_choice == 3:
                 print(f"Updates typically contain some important messages."
                         f"It is highly advised you move/save said messages before proceeding.")
-                
+
                 update_prompt = user_confirmation("Would you like to proceed?")
 
                 if update_prompt == "y":
@@ -241,7 +306,9 @@ def select_category():
         print(f"An error occurred: {error}")
         print("Restarting operations.")
 
-def main():
+def main() -> None:
+    """The main function of the module."""
+
     try:
         user_input = "6767"
         while user_input != 5:
@@ -262,7 +329,7 @@ def main():
 
             elif user_input == 5:
                 print("Bye bye!")
-                
+
             else:
                 print("Please select a valid option! T.T")
 
@@ -273,7 +340,6 @@ def main():
         os.system('cls' if os.name == 'nt' else 'clear')
         print(f"An error occurred: {error}")
         print("Restarting operations.")
-
 
 if __name__ == "__main__":
     main()
