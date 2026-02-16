@@ -95,11 +95,27 @@ Before you actually use these scripts yourself, please make sure to have these i
 
 ### burno
 
-1. **Ensure your curren working directory is in cryn.**
+To use burno, you must generate an OAuth 2.0 client id with google cloud:
+
+1. **Follow the steps provided:**
+
+    - OAuth 2.0 client id generation at [google.com](https://developers.google.com/workspace/guides/create-credentials#oauth-client-id).
+
+2. **Download your client id secret and rename it to "credentials.json"**
+
+3. **Move your credentials.json into configs/gmail/:**
+
+    ```bash
+    # example path
+    /home/user/Documents/cryn/configs/gmail/your-credentials.json
+    ```
+
+After creating one, the script should be ready for use:
+
+1. **Ensure your current working directory is in cryn.**
 
     ```bash
     # bash
-
     pwd #Output: home/user/path/to/cryn or something similar
     ```
 
@@ -109,6 +125,6 @@ Before you actually use these scripts yourself, please make sure to have these i
     python3 scripts/burno.py
     ```
 
-3. **Login through google SSO and allow access.**
+3. **Login through google SSO and allow access (should only be one time until generated token expires).**
 
 4. **Follow the prompts.**
