@@ -126,6 +126,11 @@ print_dependencies_to_be_installed() {
     echo "${bold}${reverse}${green}Morgan '(ᗒᗣᗕ)՞${reset}"
     echo "${bold}${reverse}${yellow}Joi ʕ•ᴥ•ʔ${reset}"
     echo "${bold}${reverse}${orange}Firebase ᕙ(⇀‸↼')ᕗ${reset}"
+    echo "${bold}${reverse}${orange}dotenv (shhh... keep it a secret) (꒪ȏ꒪;)${reset}"
+    echo "${bold}${reverse}${orange}Helmet ヽ(^◇^*)/${reset}"
+    echo "${bold}${reverse}${orange}cors 〴⋋_⋌〵${reset}"
+    echo "${bold}${reverse}${orange}Swagger ( ・◇・)?${reset}"
+    echo "${bold}${reverse}${orange}Redocly CLI ‹•.•›${reset}"
     echo
 }
 
@@ -156,6 +161,19 @@ install_all_dependencies() {
     install_package "joi"
     sleep "${SHORT_DELAY}"
     install_package "firebase-admin"
+    install_package "firebase"
+    sleep "${SHORT_DELAY}"
+    install_package "dotenv"
+    sleep "${SHORT_DELAY}"
+    install_package "helmet"
+    sleep "${SHORT_DELAY}"
+    install_package "cors"
+    install_package "@types/cors" --save-dev
+    sleep "${SHORT_DELAY}"
+    install_package "swagger-ui-express"
+    install_package "swagger-jsdoc"
+    sleep "${SHORT_DELAY}"
+    install_package "@redocly/cli" --save-dev
     echo "Build and dev dependencies installed O=('-'Q)"
     echo
     echo
