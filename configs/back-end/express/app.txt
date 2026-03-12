@@ -1,12 +1,20 @@
 import express, { Express } from "express";
-import morgan from "morgan";
 import healthRoutes from "../src/api/v1/routes/healthRoutes";
+import errorHandler from "../src/api/v1/middleware/errorHandler"
+import { accessLogger, consoleLogger, errorLogger } from "./api/v1/middleware/logger";
 
 // start express
 const app: Express = express();
 
-// configure Morgan
-app.use(morgan("combined"));
+// configure logging middleware
+if (process.env.NODE_ENV === "production") {
+    // log to files for production
+    app.use(accessLogger);
+    app.use(errorLogger);
+} else {
+    // log to console for immediate feedback in development
+    app.use(consoleLogger);
+}
 
 // middleware parsing for json responses
 app.use(express.json());
@@ -18,5 +26,11 @@ app.get("/", (req, res) => {
 
 // health route
 app.use("/api/v1/health", healthRoutes);
+
+// loans routes
+app.use("/api/v1/loans", loanRoutes);
+
+// error handler middleware
+app.use(errorHandler);
 
 export default app;
