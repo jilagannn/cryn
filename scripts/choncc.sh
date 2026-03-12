@@ -126,10 +126,10 @@ print_dependencies_to_be_installed() {
     echo "${bold}${reverse}${green}Morgan '(ᗒᗣᗕ)՞${reset}"
     echo "${bold}${reverse}${yellow}Joi ʕ•ᴥ•ʔ${reset}"
     echo "${bold}${reverse}${orange}Firebase ᕙ(⇀‸↼')ᕗ${reset}"
-    echo "${bold}${reverse}${orange}dotenv (shhh... keep it a secret) (꒪ȏ꒪;)${reset}"
-    echo "${bold}${reverse}${orange}Helmet ヽ(^◇^*)/${reset}"
-    echo "${bold}${reverse}${orange}cors 〴⋋_⋌〵${reset}"
-    echo "${bold}${reverse}${orange}Swagger ( ・◇・)?${reset}"
+    echo "${bold}${reverse}${blue}dotenv (shhh... keep it a secret) (꒪ȏ꒪;)${reset}"
+    echo "${bold}${reverse}${red}Helmet ヽ(^◇^*)/${reset}"
+    echo "${bold}${reverse}${cyan}cors 〴⋋_⋌〵${reset}"
+    echo "${bold}${reverse}${green}Swagger ( ・◇・)?${reset}"
     echo "${bold}${reverse}${orange}Redocly CLI ‹•.•›${reset}"
     echo
 }
@@ -188,9 +188,9 @@ configure_base_files() {
     sleep "${LONG_DELAY}"
 
     # base files
-    touch sandbox.ts config/firebaseConfig.ts config/corsConfig.ts config/helmetConfig.ts /src/app.ts src/server.ts src/constants/httpConstants.ts src/api/v1/models/healthModel.ts src/api/v1/models/responseModel.ts src/api/v1/models/authorizationOptions.ts src/api/v1/types/expressTypes.ts src/api/v1/types/firestoreDataTypes.ts src/api/v1/middleware/authenticate.ts src/api/v1/middleware/authorize.ts src/api/v1/middleware/errorHandler.ts src/api/v1/middleware/logger.ts src/api/v1/middleware/validate.ts src/api/v1/errors/error.ts src/api/v1/repositories/firestoreRepository.ts src/api/v1/utils/errorUtils.ts src/api/v1/routes/healthRoutes.ts test/integration/app.test.ts test/integration/healthRoutes.test.ts test/jest.setup.ts
+    touch sandbox.ts config/firebaseConfig.ts config/corsConfig.ts config/helmetConfig.ts src/app.ts src/server.ts src/constants/httpConstants.ts src/api/v1/models/healthModel.ts src/api/v1/models/responseModel.ts src/api/v1/models/authorizationOptions.ts src/api/v1/types/expressTypes.ts src/api/v1/types/firestoreDataTypes.ts src/api/v1/middleware/authenticate.ts src/api/v1/middleware/authorize.ts src/api/v1/middleware/errorHandler.ts src/api/v1/middleware/logger.ts src/api/v1/middleware/validate.ts src/api/v1/errors/errors.ts src/api/v1/repositories/firestoreRepository.ts src/api/v1/utils/errorUtils.ts src/api/v1/routes/healthRoutes.ts test/integration/app.test.ts test/integration/healthRoutes.test.ts test/jest.setup.ts
 
-    echo -e "${italic}${reverse}Base files created => 'sandbox.ts', \n'config/firebaseConfig.ts', config/helmetConfig.ts', config/corsConfig.ts', \n'src/app.ts', 'src/server.ts', \n'src/constants/httpConstants.ts', \n'src/api/v1/models/healthModel.ts', 'src/api/v1/models/responseModel.ts', 'src/api/v1/models/authorizationOptions.ts', \n'src/api/v1/routes/healthRoutes.ts', /n'src/api/v1/types/expressTypes.ts', 'src/api/v1/types/firestoreDataTypes.ts', \n'src/api/v1/middleware/authenticate.ts', 'src/api/v1/middleware/authorize.ts', 'src/api/v1/middleware/errorHandler.ts', 'src/api/v1/middleware/logger.ts', 'src/api/v1/middleware/validate.ts', \n'src/api/v1/errors/error.ts', \n'src/api/v1/repositories/firestoreRepository.ts', \n'src/api/v1/utils/errorUtils.ts' ${reset}"
+    echo -e "${italic}${reverse}Base files created => 'sandbox.ts', \n'config/firebaseConfig.ts', config/helmetConfig.ts', config/corsConfig.ts', \n'src/app.ts', 'src/server.ts', \n'src/constants/httpConstants.ts', \n'src/api/v1/models/healthModel.ts', 'src/api/v1/models/responseModel.ts', 'src/api/v1/models/authorizationOptions.ts', \n'src/api/v1/routes/healthRoutes.ts', /n'src/api/v1/types/expressTypes.ts', 'src/api/v1/types/firestoreDataTypes.ts', \n'src/api/v1/middleware/authenticate.ts', 'src/api/v1/middleware/authorize.ts', 'src/api/v1/middleware/errorHandler.ts', 'src/api/v1/middleware/logger.ts', 'src/api/v1/middleware/validate.ts', \n'src/api/v1/errors/errors.ts', \n'src/api/v1/repositories/firestoreRepository.ts', \n'src/api/v1/utils/errorUtils.ts' ${reset}"
     echo
 
     echo "Creating base Express API ⇒"

@@ -27,8 +27,7 @@ app.get("/", (req, res) => {
 // health route
 app.use("/api/v1/health", healthRoutes);
 
-// loans routes
-app.use("/api/v1/loans", loanRoutes);
+// endpoints
 
 // error handler middleware
 app.use(errorHandler);
