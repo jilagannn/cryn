@@ -200,7 +200,7 @@ configure_base_files() {
     cp "${cryn_configs_path}/configs/back-end/configs/corsConfig.txt" "config/corsConfig.ts"
     cp "${cryn_configs_path}/configs/back-end/configs/helmetConfig.txt" "config/helmetConfig.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Configs created on 'config/'${reset}"
+    echo "${italic}${reverse}Configs created in 'config/'${reset}"
 
     # express app
     cp "${cryn_configs_path}/configs/back-end/express/app.txt" "src/app.ts"
@@ -209,7 +209,7 @@ configure_base_files() {
 
     cp "${cryn_configs_path}/configs/back-end/express/server.txt" "src/server.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Server component created on 'src/server.ts'${reset}"
+    echo "${italic}${reverse}Server component created in 'src/server.ts'${reset}"
 
     # constants
     cp "${cryn_configs_path}/configs/back-end/constants/httpConstants.txt" "src/constants/httpConstants.ts"
@@ -220,23 +220,23 @@ configure_base_files() {
     cp "${cryn_configs_path}/configs/back-end/models/authorizationOptions.txt" "src/api/v1/models/authorizationOptions.ts"
     cp "${cryn_configs_path}/configs/back-end/models/responseModel.txt" "src/api/v1/models/responseModel.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Models created on 'src/api/v1/models/'${reset}"
+    echo "${italic}${reverse}Models created in 'src/api/v1/models/'${reset}"
 
     # types
     cp "${cryn_configs_path}/configs/back-end/types/expressTypes.txt" "src/api/v1/types/expressTypes.ts"
     cp "${cryn_configs_path}/configs/back-end/types/firestoreDataTypes.txt" "src/api/v1/types/firestoreDataTypes.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Types created on 'src/api/v1/types/'${reset}"
+    echo "${italic}${reverse}Types created in 'src/api/v1/types/'${reset}"
 
     # errors
     cp "${cryn_configs_path}/configs/back-end/errors/errors.txt" "src/api/v1/errors/errors.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Errors created on 'src/api/v1/errors/'${reset}"
+    echo "${italic}${reverse}Errors created in 'src/api/v1/errors/'${reset}"
 
     # repositories
     cp "${cryn_configs_path}/configs/back-end/repositories/firestoreRepository.txt" "src/api/v1/repositories/firestoreRepository.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Repositories created on 'src/api/v1/repositories/'${reset}"
+    echo "${italic}${reverse}Repositories created in 'src/api/v1/repositories/'${reset}"
 
     # middleware
     cp "${cryn_configs_path}/configs/back-end/middleware/authenticate.txt" "src/api/v1/middleware/authenticate.ts"
@@ -245,18 +245,18 @@ configure_base_files() {
     cp "${cryn_configs_path}/configs/back-end/middleware/logger.txt" "src/api/v1/middleware/logger.ts"
     cp "${cryn_configs_path}/configs/back-end/middleware/validate.txt" "src/api/v1/middleware/validate.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Middlewares set up on 'src/api/v1/middleware/'${reset}"
+    echo "${italic}${reverse}Middlewares set up in 'src/api/v1/middleware/'${reset}"
 
     # utils
     cp "${cryn_configs_path}/configs/back-end/utils/errorUtils.txt" "src/api/v1/utils/errorUtils.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Utils created on 'src/api/v1/middleware/'${reset}"
+    echo "${italic}${reverse}Utils created in 'src/api/v1/middleware/'${reset}"
 
     # health check public endpoint
     cp "${cryn_configs_path}/configs/back-end/models/healthModel.txt" "src/api/v1/models/healthModel.ts"
     cp "${cryn_configs_path}/configs/back-end/endpoints/healthRoutes.txt" "src/api/v1/routes/healthRoutes.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Health check endpoint created on 'src/api/v1/models, src/api/v1/routes', 'src/app.ts'${reset}"
+    echo "${italic}${reverse}Health check endpoint created in 'src/api/v1/models, src/api/v1/routes', 'src/app.ts'${reset}"
 
     # test (like integration tests and the setup with mocking)
     cp "${cryn_configs_path}/configs/back-end/test/appTest.txt" "test/integration/app.test.ts"
