@@ -177,22 +177,32 @@ install_all_dependencies() {
     echo "Build and dev dependencies installed O=('-'Q)"
     echo
     echo
-    write_log "INFO" "${EXIT_CODE}" "Successfully installed Express.js, TypeScript, Jest, Supertest, Morgan, Joi, and Firebase." "${POST_LOG_PATH}"
+    write_log "INFO" "${EXIT_CODE}" "Successfully installed Express.js, TypeScript, Jest, Supertest, Morgan, Joi, Firebase, cors, Helmet, and Swagger." "${POST_LOG_PATH}"
 }
 
 configure_base_files() {
     echo "Creating API project directory ⇒"
-    mkdir -p config/ test/integration/ test/unit/ src/constants/ src/api/v1/services/ src/api/v1/controllers/ src/api/v1/routes/ src/api/v1/middleware/ src/api/v1/repositories/ src/api/v1/models/ src/api/v1/validations/ src/api/v1/utils/
+    mkdir -p config/ test/integration/ test/unit/ src/constants/ src/logs src/api/v1/services/ src/api/v1/controllers/ src/api/v1/routes/ src/api/v1/middleware/ src/api/v1/repositories/ src/api/v1/models/ src/api/v1/validations/ src/api/v1/utils/ src/api/v1/types/ src/api/v1/errors/ 
     sleep "${LONG_DELAY}"
-    echo "${italic}${reverse}API structure created => 'src/api/v1', 'src/constants/', 'test/', 'config/'${reset}"
+    echo "${italic}${reverse}API structure created => 'src/api/v1', 'src/constants/', 'src/logs' 'test/', 'config/'${reset}"
     sleep "${LONG_DELAY}"
 
     # base files
-    touch sandbox.ts src/app.ts src/server.ts src/constants/httpConstants.ts src/api/v1/models/healthModel.ts src/api/v1/routes/healthRoutes.ts test/integration/app.test.ts test/integration/healthRoutes.test.ts
-    echo "${italic}${reverse}Base files created => 'sandbox.ts','src/app.ts', 'src/server.ts', 'src/constants/httpConstants.ts', 'src/api/v1/models/healthModel.ts', 'src/api/v1/routes/healthRoutes.ts' ${reset}"
+    touch sandbox.ts config/firebaseConfig.ts config/corsConfig.ts config/helmetConfig.ts /src/app.ts src/server.ts src/constants/httpConstants.ts src/api/v1/models/healthModel.ts src/api/v1/models/responseModel.ts src/api/v1/models/authorizationOptions.ts src/api/v1/types/expressTypes.ts src/api/v1/types/firestoreDataTypes.ts src/api/v1/middleware/authenticate.ts src/api/v1/middleware/authorize.ts src/api/v1/middleware/errorHandler.ts src/api/v1/middleware/logger.ts src/api/v1/middleware/validate.ts src/api/v1/errors/error.ts src/api/v1/repositories/firestoreRepository.ts src/api/v1/utils/errorUtils.ts src/api/v1/routes/healthRoutes.ts test/integration/app.test.ts test/integration/healthRoutes.test.ts test/jest.setup.ts
+
+    echo -e "${italic}${reverse}Base files created => 'sandbox.ts', \n'config/firebaseConfig.ts', config/helmetConfig.ts', config/corsConfig.ts', \n'src/app.ts', 'src/server.ts', \n'src/constants/httpConstants.ts', \n'src/api/v1/models/healthModel.ts', 'src/api/v1/models/responseModel.ts', 'src/api/v1/models/authorizationOptions.ts', \n'src/api/v1/routes/healthRoutes.ts', /n'src/api/v1/types/expressTypes.ts', 'src/api/v1/types/firestoreDataTypes.ts', \n'src/api/v1/middleware/authenticate.ts', 'src/api/v1/middleware/authorize.ts', 'src/api/v1/middleware/errorHandler.ts', 'src/api/v1/middleware/logger.ts', 'src/api/v1/middleware/validate.ts', \n'src/api/v1/errors/error.ts', \n'src/api/v1/repositories/firestoreRepository.ts', \n'src/api/v1/utils/errorUtils.ts' ${reset}"
     echo
 
     echo "Creating base Express API ⇒"
+
+    # config files
+    cp "${cryn_configs_path}/configs/back-end/configs/firebaseConfig.txt" "config/firebaseConfig.ts"
+    cp "${cryn_configs_path}/configs/back-end/configs/corsConfig.txt" "config/corsConfig.ts"
+    cp "${cryn_configs_path}/configs/back-end/configs/helmetConfig.txt" "config/helmetConfig.ts"
+    sleep "${SHORT_DELAY}"
+    echo "${italic}${reverse}Configs created on 'config/'${reset}"
+
+    # express app
     cp "${cryn_configs_path}/configs/back-end/express/app.txt" "src/app.ts"
     sleep "${SHORT_DELAY}"
     echo "${italic}${reverse}Basic express app created for 'src/app.ts'${reset}"
@@ -201,21 +211,59 @@ configure_base_files() {
     sleep "${SHORT_DELAY}"
     echo "${italic}${reverse}Server component created on 'src/server.ts'${reset}"
 
-    cp "${cryn_configs_path}/configs/back-end/files/httpConstants.txt" "src/constants/httpConstants.ts"
+    # constants
+    cp "${cryn_configs_path}/configs/back-end/constants/httpConstants.txt" "src/constants/httpConstants.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Constants created on 'src/constants/httpConstants.ts'${reset}"
+    echo "${italic}${reverse}Constants created in 'src/constants/httpConstants.ts'${reset}"
 
-    cp "${cryn_configs_path}/configs/back-end/files/healthModel.txt" "src/api/v1/models/healthModel.ts"
+    # models
+    cp "${cryn_configs_path}/configs/back-end/models/authorizationOptions.txt" "src/api/v1/models/authorizationOptions.ts"
+    cp "${cryn_configs_path}/configs/back-end/models/responseModel.txt" "src/api/v1/models/responseModel.ts"
     sleep "${SHORT_DELAY}"
-    cp "${cryn_configs_path}/configs/back-end/files/healthRoutes.txt" "src/api/v1/routes/healthRoutes.ts"
-    sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Health check endpoint created on 'src/api/v1/models, src/api/v1/routes'${reset}"
+    echo "${italic}${reverse}Models created on 'src/api/v1/models/'${reset}"
 
-    cp "${cryn_configs_path}/configs/back-end/files/appTest.txt" "test/integration/app.test.ts"
+    # types
+    cp "${cryn_configs_path}/configs/back-end/types/expressTypes.txt" "src/api/v1/types/expressTypes.ts"
+    cp "${cryn_configs_path}/configs/back-end/types/firestoreDataTypes.txt" "src/api/v1/types/firestoreDataTypes.ts"
     sleep "${SHORT_DELAY}"
-    cp "${cryn_configs_path}/configs/back-end/files/healthRoutesTest.txt" "test/integration/healthRoutes.test.ts"
+    echo "${italic}${reverse}Types created on 'src/api/v1/types/'${reset}"
+
+    # errors
+    cp "${cryn_configs_path}/configs/back-end/errors/errors.txt" "src/api/v1/errors/errors.ts"
     sleep "${SHORT_DELAY}"
-    echo "${italic}${reverse}Configured base tests in 'test/integration/'${reset}"
+    echo "${italic}${reverse}Errors created on 'src/api/v1/errors/'${reset}"
+
+    # repositories
+    cp "${cryn_configs_path}/configs/back-end/repositories/firestoreRepository.txt" "src/api/v1/repositories/firestoreRepository.ts"
+    sleep "${SHORT_DELAY}"
+    echo "${italic}${reverse}Repositories created on 'src/api/v1/repositories/'${reset}"
+
+    # middleware
+    cp "${cryn_configs_path}/configs/back-end/middleware/authenticate.txt" "src/api/v1/middleware/authenticate.ts"
+    cp "${cryn_configs_path}/configs/back-end/middleware/authorize.txt" "src/api/v1/middleware/authorize.ts"
+    cp "${cryn_configs_path}/configs/back-end/middleware/errorHandler.txt" "src/api/v1/middleware/errorHandler.ts"
+    cp "${cryn_configs_path}/configs/back-end/middleware/logger.txt" "src/api/v1/middleware/logger.ts"
+    cp "${cryn_configs_path}/configs/back-end/middleware/validate.txt" "src/api/v1/middleware/validate.ts"
+    sleep "${SHORT_DELAY}"
+    echo "${italic}${reverse}Middlewares set up on 'src/api/v1/middleware/'${reset}"
+
+    # utils
+    cp "${cryn_configs_path}/configs/back-end/utils/errorUtils.txt" "src/api/v1/utils/errorUtils.ts"
+    sleep "${SHORT_DELAY}"
+    echo "${italic}${reverse}Utils created on 'src/api/v1/middleware/'${reset}"
+
+    # health check public endpoint
+    cp "${cryn_configs_path}/configs/back-end/models/healthModel.txt" "src/api/v1/models/healthModel.ts"
+    cp "${cryn_configs_path}/configs/back-end/endpoints/healthRoutes.txt" "src/api/v1/routes/healthRoutes.ts"
+    sleep "${SHORT_DELAY}"
+    echo "${italic}${reverse}Health check endpoint created on 'src/api/v1/models, src/api/v1/routes', 'src/app.ts'${reset}"
+
+    # test (like integration tests and the setup with mocking)
+    cp "${cryn_configs_path}/configs/back-end/test/appTest.txt" "test/integration/app.test.ts"
+    cp "${cryn_configs_path}/configs/back-end/test/healthRoutesTest.txt" "test/integration/healthRoutes.test.ts"
+    cp "${cryn_configs_path}/configs/back-end/test/jestSetup.txt" "test/jest.setup.ts"
+    sleep "${SHORT_DELAY}"
+    echo "${italic}${reverse}Configured base tests in 'test/'${reset}"
     echo
     echo
     write_log "INFO" "${EXIT_CODE}" "Successfully configured base directory and files" "${POST_LOG_PATH}"
