@@ -1,0 +1,27 @@
+// Always mock firebase in every test
+jest.mock("../config/firebaseConfig", () => ({
+    db: {
+        collection: jest.fn(),
+        doc: jest.fn(),
+    },
+    auth: {
+        verifyIdToken: jest.fn(),
+    },
+}));
+
+// Mock functions used from fs module
+jest.mock("fs", () => ({
+    existsSync: jest.fn(),
+    mkdirSync: jest.fn(),
+    createWriteStream: jest.fn(),
+    readFileSync: jest.fn().mockReturnValue("mock-api-key")
+}));
+
+// Reset all mocks after each test
+afterEach(() => {
+    jest.clearAllMocks();
+});
+
+afterAll(() => {
+    jest.resetModules();
+});
