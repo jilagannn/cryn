@@ -22,30 +22,48 @@ check_program "VBoxManage"
 start_vm() {
     echo "Enter name of vm:"
     read -r vm_name
+    echo "Initializing ${vm_name}!"
     VBoxManage startvm "${vm_name}" --type headless
+    echo 
+    run_gui
+}
+
+run_gui() {
+    echo "Operate VM with GUI?: y/N"
+    echo "1. Yes"
+    echo "2. No"
+    read -r decision
+
+    if [[ $decision == "y" ]]; then
+        VBoxManage controlvm "${vm_name}" gui
+    else
+        echo "Who needs a GUI anyways..."
+    fi
 }
 
 close_vm() {
     echo "Enter name of vm:"
     read -r vm_name
+    echo "Terminating ${vm_name}!"
     VBoxManage controlvm "${vm_name}" poweroff --type headless
 }
 
 pause_vm() {
     echo "Enter name of vm:"
     read -r vm_name
+    echo "Pausing ${vm_name}!"
     VBoxManage controlvm "${vm_name}" pause --type headless
 }
 
 list_vms() {
+    echo "Listing all vms:"
     VBoxManage list vms
 }
 
 dango_init(){
     echo "hello im dango !"
     sleep "${SHORT_DELAY}"
-    echo "Select an operation: "
-    echo
+    echo "Select an operation (number): "
     echo
     echo "1. List VMs" 
     echo "2. Start VM" 
