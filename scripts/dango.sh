@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# source https://www.bashsupport.com/manual/inspections/
+source "$(dirname "$0")/styling.sh"
+
 # if anything fails -> exit
 set -eou pipefail
 
