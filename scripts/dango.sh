@@ -20,15 +20,21 @@ check_program() {
 check_program "VBoxManage"
 
 start_vm() {
-    VBoxManage startvm "UbuntuSERVER Clone" --type headless
+    echo "Enter name of vm:"
+    read -r vm_name
+    VBoxManage startvm "${vm_name}" --type headless
 }
 
 close_vm() {
-    VBoxManage controlvm "UbuntuSERVER Clone" poweroff --type headless
+    echo "Enter name of vm:"
+    read -r vm_name
+    VBoxManage controlvm "${vm_name}" poweroff --type headless
 }
 
 pause_vm() {
-    VBoxManage controlvm "UbuntuSERVER Clone" pause --type headless
+    echo "Enter name of vm:"
+    read -r vm_name
+    VBoxManage controlvm "${vm_name}" pause --type headless
 }
 
 list_vms() {
