@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091
+# shellcheck disable=SC2154
 # source https://www.bashsupport.com/manual/inspections/
 source "$(dirname "$0")/styling.sh"
 
