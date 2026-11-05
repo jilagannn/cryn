@@ -24,7 +24,7 @@ start_vm() {
     read -r vm_name
     echo "Initializing ${vm_name}!"
     VBoxManage startvm "${vm_name}" --type headless
-    echo 
+    echo
     run_gui
 }
 
@@ -33,7 +33,6 @@ run_gui() {
     echo "1. Yes"
     echo "2. No"
     read -r decision
-
     if [[ $decision == "y" ]]; then
         VBoxManage controlvm "${vm_name}" gui
     else
@@ -46,6 +45,7 @@ close_vm() {
     read -r vm_name
     echo "Terminating ${vm_name}!"
     VBoxManage controlvm "${vm_name}" poweroff --type headless
+    echo "${vm_name} terminated successfully!"
 }
 
 pause_vm() {
@@ -53,6 +53,7 @@ pause_vm() {
     read -r vm_name
     echo "Pausing ${vm_name}!"
     VBoxManage controlvm "${vm_name}" pause --type headless
+    echo "${vm_name} paused successfully!"
 }
 
 list_vms() {
