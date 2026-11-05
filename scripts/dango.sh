@@ -34,3 +34,31 @@ pause_vm() {
 list_vms() {
     VBoxManage list vms
 }
+
+dango_init(){
+    echo "hello im dango !"
+    sleep "${SHORT_DELAY}"
+    echo "Select an operation: "
+    echo
+    echo
+    echo "1. List VMs" 
+    echo "2. Start VM" 
+    echo "3. Stop VM"
+    echo "4. Pause VM" 
+    echo "5. Exit :-("
+    read -r selection
+
+    if [[ "$selection" == 1 ]]; then
+        list_vms
+    elif [[ ${selection} == 2 ]]; then
+        start_vm
+    elif [[ ${selection} == 3 ]]; then
+        close_vm
+    elif [[ ${selection} == 4 ]]; then
+        pause_vm
+    else
+        echo "Well what did you start me up for..."
+    fi
+}
+
+dango_init
